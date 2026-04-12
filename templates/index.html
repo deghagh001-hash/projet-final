@@ -1,0 +1,1405 @@
+<!DOCTYPE html>
+<html lang="en" itemscope itemtype="https://schema.org/WebPage">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>YouTube to MP4 Converter - Download Videos from YouTube, TikTok, Instagram | Free HD Quality</title>
+
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Free YouTube to MP4 converter. Download HD videos from YouTube, TikTok, Instagram, Twitch in 1080p, 720p, 480p. Fast, secure online video converter - no registration required.">
+    <meta name="keywords" content="youtube to mp4, video converter, download youtube videos, mp3 converter, tiktok downloader, instagram video download, youtube downloader, free video converter, hd video download">
+    <meta name="author" content="YouTube to MP4">
+    <meta name="rating" content="safe for kids">
+    <meta name="language" content="EN">
+    <meta name="revisit-after" content="7 days">
+
+    <!-- Robot Meta Tags -->
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <meta name="googlebot" content="index, follow">
+    <meta name="bingbot" content="index, follow">
+
+    <!-- Site Verification -->
+    <meta name="google-site-verification" content="abc123def456ghi789jkl012mno345pqr678stu901vwx234yzab567cde890">
+    <meta name="msvalidate.01" content="1234567890ABCDEF1234567890ABCDEF">
+    <meta name="yandex-verification" content="yandex-verification-code-here">
+
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="YouTube to MP4 Converter - Free HD Video Downloader">
+    <meta property="og:description" content="Convert YouTube videos to MP4 format. Download from YouTube, TikTok, Instagram, Twitch in HD quality. Fast and free online converter.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://youtubetomp4.fr/assets/og-image.webp">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="YouTube to MP4 Converter">
+    <meta property="og:locale" content="en_US">
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@youtubetomp4">
+    <meta name="twitter:creator" content="@youtubetomp4">
+    <meta name="twitter:title" content="YouTube to MP4 Converter - Free Video Downloader">
+    <meta name="twitter:description" content="Convert and download videos from YouTube to MP4 format. Free HD quality video converter for YouTube, TikTok, Instagram.">
+    <meta name="twitter:image" content="https://youtubetomp4.fr/assets/twitter-image.webp">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://youtubetomp4.fr/">
+
+    <!-- International SEO -->
+    <link rel="alternate" hreflang="en" href="https://youtubetomp4.fr/" />
+    <link rel="alternate" hreflang="fr" href="https://youtubetomp4.fr/fr/" />
+    <link rel="alternate" hreflang="es" href="https://youtubetomp4.fr/es/" />
+    <link rel="alternate" hreflang="x-default" href="https://youtubetomp4.fr/" />
+
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#EF4444">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="/manifest.json">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/logo.png') }}">
+
+    <!-- Performance Optimizations -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com">
+    <link rel="preload" href="https://cdn.tailwindcss.com" as="script">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js" as="script">
+
+    <!-- Schema.org Markup -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "YouTube to MP4 Converter",
+        "description": "Free online video converter for YouTube, TikTok, Instagram, Twitch and more platforms",
+        "applicationCategory": "UtilityApplication",
+        "operatingSystem": "All",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
+        "author": {
+            "@type": "Organization",
+            "name": "YouTube to MP4"
+        },
+        "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "4.8",
+            "ratingCount": "2847"
+        }
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "YouTube to MP4 Converter",
+        "url": "https://youtubetomp4.fr/",
+        "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://youtubetomp4.fr/?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+        }
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+        {
+            "@type": "Question",
+            "name": "Is YouTube to MP4 conversion legal?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Our service is for personal use only. Users must comply with YouTube's Terms of Service and copyright laws."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "What video quality options are available?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "We support MP4 conversion in 1080p Full HD, 720p HD, and 480p standard quality."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Is this YouTube to MP4 converter free?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes, our YouTube to MP4 conversion service is completely free with daily limits for fair usage."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "What video platforms do you support?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "We support YouTube, TikTok, Instagram, Twitch, and many other popular video platforms."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "What formats can I convert to?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "We support MP4 (1080p, 720p, 480p) for video and MP3 (128kbps, 320kbps), WAV for audio conversions."
+            }
+        }]
+    }
+    </script>
+
+    <!-- Additional Service Microdata -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Service",
+        "serviceType": "Video Conversion",
+        "provider": {
+            "@type": "Organization",
+            "name": "YouTube to MP4"
+        },
+        "areaServed": "Worldwide",
+        "availableChannel": {
+            "@type": "ServiceChannel",
+            "serviceUrl": "https://youtubetomp4.fr/"
+        },
+        "description": "Free online video conversion service for YouTube, TikTok, Instagram and Twitch videos"
+    }
+    </script>
+
+    <!-- Google Analytics & Google Ads (Désactivé pour éviter les erreurs console) -->
+    <!--
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        // Configure Google Analytics
+        gtag('config', 'G-XXXXXXXXXX', {
+            page_title: document.title,
+            page_location: window.location.href
+        });
+
+        // Configure Google Ads (remplacez AW-CONVERSION_ID par votre ID)
+        gtag('config', 'AW-CONVERSION_ID');
+    </script>
+    -->
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Matter.js for Gravity Mode -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body class="text-white min-h-screen font-sans">
+    <!-- Background Video -->
+    <video autoplay muted loop playsinline id="bg-video" style="position: fixed; right: 0; bottom: 0; min-width: 100%; min-height: 100%; width: auto; height: auto; z-index: -2; object-fit: cover; background-color: #000;">
+        <source src="{{ url_for('static', filename='video/background.mp4') }}" type="video/mp4">
+    </video>
+    <!-- Dark Overlay to ensure text readability -->
+    <div id="bg-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 10, 10, 0.4); z-index: -1;"></div>
+
+    <!-- Background Audio -->
+    <audio loop id="bg-audio">
+        <source src="{{ url_for('static', filename='audio/background_audio.mp3') }}" type="audio/mp3">
+    </audio>
+
+
+    <!-- Barre de chargement -->
+    <div id="loading-bar-container" class="loading-bar-container">
+        <div class="loading-bar"></div>
+        <div class="loading-bar-glow"></div>
+        <div class="loading-steps" id="loading-steps">Initializing...</div>
+        <div class="loading-percentage" id="loading-percentage">0%</div>
+    </div>
+
+    <!-- Analytics Consent Banner -->
+    <div id="consent-banner" class="consent-banner" style="display: none;">
+        <div class="container mx-auto flex flex-col md:flex-row items-center justify-between">
+            <p class="text-sm mb-2 md:mb-0 text-gray-300">
+                We use anonymous analytics to improve our service. No personal data is collected.
+            </p>
+            <div class="flex space-x-2">
+                <button id="accept-consent"
+                    class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded text-sm text-white transition-colors">
+                    Accept
+                </button>
+                <button id="decline-consent"
+                    class="bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded text-sm text-white transition-colors">
+                    Decline
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header avec sélecteur de langue -->
+    <header class="bg-transparent backdrop-blur-lg sticky top-0 z-50 border-b border-gray-700/50" role="banner"
+        aria-label="Site header">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex-shrink-0 flex items-center gap-4">
+                    <a href="#" id="brand-logo" class="text-2xl font-bold brand-font text-red-500 transition-colors flex items-center"
+                        aria-label="YouTube to MP4 Home">
+                        <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo" class="w-8 h-8 mr-2">
+                        <span class="cursor-pointer hover:scale-105 transition-transform">youtubetomp4</span></a>
+
+                    <!-- Custom Theme Picker -->
+                    <div class="relative group">
+                        <button
+                            class="w-6 h-6 rounded-full bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 border border-white/20 shadow-lg hover:scale-110 transition-transform"
+                            title="Customize Theme"></button>
+                        <div
+                            class="absolute left-0 top-full mt-2 bg-gray-800 border border-gray-700 rounded-lg p-3 shadow-xl hidden group-hover:block w-48 z-50">
+                            <p class="text-xs text-gray-400 mb-2">Pick Accent Color:</p>
+                            <div class="grid grid-cols-5 gap-2">
+                                <button data-color="#EF4444"
+                                    class="w-6 h-6 rounded-full bg-red-500 hover:scale-110 transition-transform"></button>
+                                <button data-color="#3B82F6"
+                                    class="w-6 h-6 rounded-full bg-blue-500 hover:scale-110 transition-transform"></button>
+                                <button data-color="#10B981"
+                                    class="w-6 h-6 rounded-full bg-green-500 hover:scale-110 transition-transform"></button>
+                                <button data-color="#F59E0B"
+                                    class="w-6 h-6 rounded-full bg-yellow-500 hover:scale-110 transition-transform"></button>
+                                <button data-color="#8B5CF6"
+                                    class="w-6 h-6 rounded-full bg-purple-500 hover:scale-110 transition-transform"></button>
+                                <button data-color="#EC4899"
+                                    class="w-6 h-6 rounded-full bg-pink-500 hover:scale-110 transition-transform"></button>
+                                <button data-color="#06B6D4"
+                                    class="w-6 h-6 rounded-full bg-cyan-500 hover:scale-110 transition-transform"></button>
+                                <button data-color="#F97316"
+                                    class="w-6 h-6 rounded-full bg-orange-500 hover:scale-110 transition-transform"></button>
+                                <button data-color="#6366F1"
+                                    class="w-6 h-6 rounded-full bg-indigo-500 hover:scale-110 transition-transform"></button>
+                                <button data-color="#ffffff"
+                                    class="w-6 h-6 rounded-full bg-white border border-gray-600 hover:scale-110 transition-transform"></button>
+                            </div>
+                        </div>
+                    </div>
+                    <button id="audio-control-btn" class="ml-4 px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded-md text-sm font-medium transition-colors" aria-label="Toggle background audio">
+                        <span id="audio-text">Son</span>
+                    </button>
+                </div>
+
+
+
+                <!-- Bouton menu mobile -->
+                <button id="mobile-menu"
+                    class="md:hidden text-gray-300 hover:text-white p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+                    aria-label="Open menu">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+
+                <!-- Navigation desktop -->
+                <nav class="hidden md:block" aria-label="Main navigation">
+                    <div class="ml-10 flex items-center space-x-4" role="menubar">
+                        <a href="#converter" data-page="home"
+                            class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium focus:ring-2 focus:ring-red-500 focus:outline-none transition-colors">Converter</a>
+                        <a href="#faq" data-page="faq"
+                            class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium focus:ring-2 focus:ring-red-500 focus:outline-none transition-colors">FAQ</a>
+                        <a href="#about" data-page="about"
+                            class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium focus:ring-2 focus:ring-red-500 focus:outline-none transition-colors">About
+                            Us</a>
+                        <a href="#blog" data-page="blog"
+                            class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium focus:ring-2 focus:ring-red-500 focus:outline-none transition-colors">Blog</a>
+                        <a href="#contact" data-page="contact"
+                            class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium focus:ring-2 focus:ring-red-500 focus:outline-none transition-colors">Contact
+                            Us</a>
+
+                    </div>
+                </nav>
+            </div>
+
+            <!-- Menu mobile -->
+            <div id="mobile-menu-content" class="md:hidden hidden bg-gray-800 border-t border-gray-700 animate-fade-in">
+                <div class="flex flex-col py-2 space-y-1">
+                    <a href="#converter" data-page="home"
+                        class="text-gray-300 hover:text-white hover:bg-gray-700 px-4 py-3 rounded-md transition-colors">Converter</a>
+                    <a href="#faq" data-page="faq"
+                        class="text-gray-300 hover:text-white hover:bg-gray-700 px-4 py-3 rounded-md transition-colors">FAQ</a>
+                    <a href="#about" data-page="about"
+                        class="text-gray-300 hover:text-white hover:bg-gray-700 px-4 py-3 rounded-md transition-colors">About
+                        Us</a>
+                    <a href="#blog" data-page="blog"
+                        class="text-gray-300 hover:text-white hover:bg-gray-700 px-4 py-3 rounded-md transition-colors">Blog</a>
+                    <a href="#contact" data-page="contact"
+                        class="text-gray-300 hover:text-white hover:bg-gray-700 px-4 py-3 rounded-md transition-colors">Contact
+                        Us</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow" role="main">
+        <!-- Home Page -->
+        <div id="home-page" class="separate-page active">
+            <section id="converter" class="py-20">
+                <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="text-center mb-12">
+                        <h1 class="text-3xl md:text-5xl font-extrabold mb-8 retro-title text-yellow-400">Welcome to youtubetomp4</h1>
+                        <p class="text-base text-gray-300 max-w-2xl mx-auto important-text font-mono">
+                            Convert any video from different web site to video mp4 and audio mp3 format
+                        </p>
+                    </div>
+
+                    <!-- Platform Selector -->
+                    <div class="flex justify-center items-center mb-8 gap-3 sm:gap-4 flex-wrap">
+                        <button
+                            class="platform-icon youtube selected flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300"
+                            data-platform="youtube" aria-pressed="true" aria-label="Select YouTube as platform"
+                            tabindex="0">
+                            <svg class="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M21.582,6.186c-0.23-0.854-0.906-1.531-1.76-1.76C18.254,4,12,4,12,4S5.746,4,4.178,4.426 c-0.854,0.23-1.531,0.906-1.76,1.76C2,7.754,2,12,2,12s0,4.246,0.418,5.814c0.23,0.854,0.906,1.531,1.76,1.76 C5.746,20,12,20,12,20s6.254,0,7.822-0.426c0.854-0.23,1.531,0.906,1.76-1.76C22,16.246,22,12,22,12S22,7.754,21.582,6.186z M10,15.464V8.536L16,12L10,15.464z" />
+                            </svg>
+                            <span>YouTube</span>
+                        </button>
+
+                        <button
+                            class="platform-icon tiktok flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300"
+                            data-platform="tiktok" aria-pressed="false" aria-label="Select TikTok as platform"
+                            tabindex="0">
+                            <svg class="w-5 h-5 text-black" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-2.43.05-4.85-.98-6.42-2.98-2.08-2.64-2.79-5.96-2.01-8.95.63-2.51 2.38-4.5 4.7-5.61 2.4-1.14 5.23-1.19 7.66-.11.02 1.48-.38 2.93-1.12 4.22-.91 1.55-2.59 2.52-4.34 2.61-1.26.06-2.5-.36-3.48-1.14-.85-.69-1.35-1.64-1.35-2.68 0-.96.43-1.87 1.1-2.55.88-.87 2.06-1.28 3.28-1.15.02-1.48.04-2.96.04-4.44z" />
+                            </svg>
+                            <span>TikTok</span>
+                        </button>
+
+                        <button
+                            class="platform-icon instagram flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300"
+                            data-platform="instagram" aria-pressed="false" aria-label="Select Instagram as platform"
+                            tabindex="0">
+                            <svg class="w-5 h-5 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                            </svg>
+                            <span>Instagram</span>
+                        </button>
+
+                        <button
+                            class="platform-icon twitch flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300"
+                            data-platform="twitch" aria-pressed="false" aria-label="Select Twitch as platform"
+                            tabindex="0">
+                            <svg class="w-5 h-5 text-purple-500" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M11.571 4.714h1.715v5.143H11.57zm4.714 0h1.715v5.143h-1.715zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0H6zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H8.571V1.714h12z" />
+                            </svg>
+                            <span>Twitch</span>
+                        </button>
+                    </div>
+
+
+                    <!-- Conversion Progress (Moved here to appear after platform selection) -->
+                    <div id="conversion-progress-container" class="mt-6 w-full max-w-2xl mx-auto"
+                        style="display: none;">
+                        <div class="text-center mb-4">
+                            <h3 class="text-xl font-bold text-white">YouTube to MP4 Conversion in Progress</h3>
+                            <p id="conversion-status" class="text-gray-300 mt-2">Initializing YouTube video download...</p>
+                        </div>
+                        <div class="conversion-progress">
+                            <div id="conversion-progress-bar" class="conversion-progress-bar"></div>
+                        </div>
+                        <div class="flex justify-between text-sm text-gray-400 mt-2">
+                            <span>0%</span>
+                            <span id="conversion-percentage">0%</span>
+                            <span>100%</span>
+                        </div>
+                        <p id="result-filename" class="text-center text-gray-300 mt-4 font-mono text-sm"></p>
+                    </div>
+
+
+                    <!-- URL Input -->
+                    <div id="url-input-container" class="flex justify-center">
+                        <div class="w-full max-w-2xl">
+                            <div class="relative">
+                                <div class="flex">
+                                    <input type="text" id="video-url" placeholder="Paste YouTube video URL here..."
+                                        class="flex-grow p-4 text-lg bg-gray-100 text-gray-900 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-red-500 transition-all"
+                                        aria-label="YouTube video URL input" />
+                                    <button id="convert-btn"
+                                        class="text-white font-bold p-4 text-lg rounded-r-lg transition duration-300 flex-shrink-0 bg-red-600 hover:bg-red-700 disabled:bg-gray-600 disabled:cursor-not-allowed focus:ring-2 focus:ring-red-500 focus:outline-none relative"
+                                        aria-label="Convert YouTube video" data-i18n="convert">
+                                        <span class="button-text">Convert</span>
+                                        <div class="spinner-container" style="display: none;">
+                                            <div class="spinner"></div>
+                                        </div>
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="error-container" class="bg-red-500 text-white p-3 rounded-lg mt-4 text-center" style="display: none;"></div>
+                            <!-- Format Selector (Moved Below URL Input) -->
+                            <div id="format-selector" class="mt-6 w-full max-w-2xl mx-auto">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <!-- Video Formats -->
+                                    <div class="bg-transparent p-4 rounded-lg">
+                                        <h4 id="video-title" class="text-xl font-bold mb-4 text-center section-title text-red-500">
+                                            Video</h4>
+                                        <div class="flex flex-wrap gap-2 justify-center">
+                                            <button
+                                                class="format-btn px-4 py-2 rounded-md text-sm font-medium bg-transparent hover:bg-gray-700 border border-gray-600 text-white focus:ring-2 focus:ring-gray-500 focus:outline-none"
+                                                data-format="mp4-1080p" aria-label="Select MP4 1080p format" aria-pressed="false">
+                                                MP4 1080p FHD
+                                            </button>
+                                            <button
+                                                class="format-btn px-4 py-2 rounded-md text-sm font-medium bg-transparent hover:bg-gray-700 border border-gray-600 text-white focus:ring-2 focus:ring-gray-500 focus:outline-none"
+                                                data-format="mp4-720p" aria-label="Select MP4 720p format" aria-pressed="false">
+                                                MP4 720p HD
+                                            </button>
+                                            <button
+                                                class="format-btn px-4 py-2 rounded-md text-sm font-medium bg-transparent hover:bg-gray-700 border border-gray-600 text-white focus:ring-2 focus:ring-gray-500 focus:outline-none"
+                                                data-format="mp4-480p" aria-label="Select MP4 480p format" aria-pressed="false">
+                                                MP4 480p
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Audio Formats -->
+                                    <div class="bg-transparent p-4 rounded-lg">
+                                        <h4 id="audio-title" class="text-xl font-bold mb-4 text-center section-title text-red-500">
+                                            Audio</h4>
+                                        <div class="flex flex-wrap gap-2 justify-center">
+                                            <button
+                                                class="format-btn px-4 py-2 rounded-md text-sm font-medium bg-transparent hover:bg-gray-700 border border-gray-600 text-white focus:ring-2 focus:ring-gray-500 focus:outline-none"
+                                                data-format="mp3-128k" aria-label="Select MP3 128kbps format" aria-pressed="false">
+                                                MP3 128kbps
+                                            </button>
+                                            <button
+                                                class="format-btn px-4 py-2 rounded-md text-sm font-medium bg-transparent hover:bg-gray-700 border border-gray-600 text-white focus:ring-2 focus:ring-gray-500 focus:outline-none"
+                                                data-format="mp3-320k" aria-label="Select MP3 320kbps format" aria-pressed="false">
+                                                MP3 320kbps
+                                            </button>
+                                            <button
+                                                class="format-btn px-4 py-2 rounded-md text-sm font-medium bg-transparent hover:bg-gray-700 border border-gray-600 text-white focus:ring-2 focus:ring-gray-500 focus:outline-none"
+                                                data-format="wav" aria-label="Select WAV format" aria-pressed="false">
+                                                WAV
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                                </div>
+                            </div>
+                            <!-- Notification de limite quotidienne & Streak -->
+                            <div class="flex justify-between items-center mt-2">
+                                <div id="daily-limit-notice" class="daily-limit-notice m-0">
+                                    <span data-i18n="daily_limit">Daily limit:</span> <span
+                                        id="conversions-left">8</span>/8
+                                </div>
+                                <div id="streak-badge"
+                                    class="hidden flex items-center bg-orange-500/20 text-orange-400 px-3 py-1 rounded-full text-sm border border-orange-500/30">
+                                    <span class="mr-1">🔥</span> <span id="streak-count">0</span> Day Streak
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Result Card -->
+                    <div id="result-card" class="result-card" style="display: none;">
+                        <div class="text-center">
+                            <div class="mb-4">
+                                <img id="video-thumbnail" class="video-thumbnail mx-auto" src="" alt="YouTube video thumbnail"
+                                    loading="lazy" decoding="async"
+                                    onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIwIiBoZWlnaHQ9IjE4MCIgdmlld0JveD0iMCAwIDMyMCAxODAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2Zz4KPHJlY3Qgd2lkdGg9IjMyMCIgaGVpZ2h0PSIxODAiIGZpbGw9IiMxRjI5MzciLz4KPHRleHQgeD0iMTYwIiB5PSI5MCIgZmlsbD0iIjlDQTMNRiIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5GYWlsZWQgdG8gbG9hZCB0aHVtYm5haWw8L3RleHQ+CjwvZ3ZzPgK'">
+
+                                <!-- Cinema Mode Button -->
+                                <button id="cinema-mode-btn"
+                                    class="absolute top-2 right-2 bg-black/50 hover:bg-black/80 text-white p-2 rounded-full transition-all z-10"
+                                    title="Cinema Mode">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" />
+                                    </svg>
+                                </button>
+
+                                <!-- Audio Waveform Visualization (Hidden by default) -->
+                                <div id="audio-visualizer"
+                                    class="hidden w-full h-48 bg-gray-900 rounded-xl flex items-center justify-center overflow-hidden relative mb-4">
+                                    <div class="flex items-end gap-1 h-20">
+                                        <div class="w-2 bg-red-500 h-4 animate-pulse"></div>
+                                        <div class="w-2 bg-red-500 h-8 animate-pulse" style="animation-delay: 0.1s">
+                                        </div>
+                                        <div class="w-2 bg-red-500 h-12 animate-pulse" style="animation-delay: 0.2s">
+                                        </div>
+                                        <div class="w-2 bg-red-500 h-6 animate-pulse" style="animation-delay: 0.3s">
+                                        </div>
+                                        <div class="w-2 bg-red-500 h-10 animate-pulse" style="animation-delay: 0.4s">
+                                        </div>
+                                        <div class="w-2 bg-red-500 h-16 animate-pulse" style="animation-delay: 0.5s">
+                                        </div>
+                                        <div class="w-2 bg-red-500 h-8 animate-pulse" style="animation-delay: 0.6s">
+                                        </div>
+                                        <div class="w-2 bg-red-500 h-4 animate-pulse" style="animation-delay: 0.7s">
+                                        </div>
+                                        <div class="w-2 bg-red-500 h-12 animate-pulse" style="animation-delay: 0.8s">
+                                        </div>
+                                        <div class="w-2 bg-red-500 h-6 animate-pulse" style="animation-delay: 0.9s">
+                                        </div>
+                                    </div>
+                                    <div class="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent"></div>
+                                    <div class="absolute bottom-4 text-gray-400 text-sm font-mono">AUDIO PREVIEW</div>
+                                </div>
+                            </div>
+                            <h3 id="video-preview-title" class="video-title mb-4">YouTube Video Title</h3>
+                            <span
+                                class="inline-block bg-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                                Format: <span id="conversion-format">MP4 1080p</span>
+                            </span>
+                        </div>
+
+                        <!-- Video Trimmer (Simulation) -->
+                        <div class="mb-6 bg-gray-800 p-4 rounded-lg border border-gray-700">
+                            <h4 class="text-sm font-semibold text-gray-300 mb-3 text-left">✂️ Trim Video (Optional)</h4>
+                            <div class="relative h-2 bg-gray-600 rounded mb-4">
+                                <div class="absolute top-0 left-0 h-full bg-red-500 rounded"
+                                    style="left: 0%; width: 100%;"></div>
+                                <div class="absolute top-1/2 -mt-2 w-4 h-4 bg-white rounded-full shadow cursor-pointer hover:scale-110 transition-transform"
+                                    style="left: 0%;"></div>
+                                <div class="absolute top-1/2 -mt-2 w-4 h-4 bg-white rounded-full shadow cursor-pointer hover:scale-110 transition-transform"
+                                    style="right: 0%;"></div>
+                            </div>
+                            <div class="flex justify-between text-xs text-gray-400 font-mono">
+                                <span>00:00</span>
+                                <span>Duration: <span id="video-duration">03:45</span></span>
+                                <span id="video-end-time">03:45</span>
+                            </div>
+                        </div>
+
+                        <!-- Boutons de partage social -->
+                        <div class="flex justify-center space-x-2 mb-4">
+                            <button data-platform="twitter"
+                                class="share-btn bg-blue-400 hover:bg-blue-500 text-white">
+                                Twitter
+                            </button>
+                            <button data-platform="facebook"
+                                class="share-btn bg-blue-600 hover:bg-blue-700 text-white">
+                                Facebook
+                            </button>
+                            <button data-platform="linkedin"
+                                class="share-btn bg-blue-700 hover:bg-blue-800 text-white">
+                                LinkedIn
+                            </button>
+                        </div>
+
+                        <div class="flex flex-col gap-3">
+                            <button id="download-btn" class="download-btn w-full" data-i18n="download">
+                                📥 Download MP4 Now
+                            </button>
+                            <button id="convert-another-btn" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg transition-colors flex items-center justify-center gap-2">
+                                🔄 Convert Another
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <!-- Batch Convert Section -->
+                <div class="mt-8 text-center animate-fade-in">
+                    <button id="toggle-batch-btn"
+                        class="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white px-8 py-3 rounded-xl transition-all duration-300 font-bold shadow-lg hover:shadow-purple-500/30 flex items-center justify-center mx-auto gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                        Batch Convert (3 Videos Max)
+                    </button>
+
+                    <div id="batch-container" class="mt-6 hidden max-w-2xl mx-auto bg-gray-800/80 backdrop-blur-md rounded-2xl p-6 border border-gray-700 shadow-xl">
+                        <div id="batch-limit-warning" class="hidden mb-4 bg-red-500/20 border border-red-500/50 text-red-200 px-4 py-3 rounded-lg text-sm">
+                            ⚠️ You have already used your free batch conversion for today.
+                        </div>
+
+                        <div id="batch-input-area">
+                            <label class="block text-left text-gray-300 text-sm font-medium mb-2">Paste up to 3 URLs (one per line):</label>
+                            <textarea id="batch-urls"
+                                class="w-full p-4 bg-gray-900/50 text-white rounded-xl border border-gray-600 focus:ring-2 focus:ring-purple-500 focus:border-transparent focus:outline-none transition-all font-mono text-sm"
+                                placeholder="https://www.youtube.com/watch?v=video1&#10;https://www.youtube.com/watch?v=video2&#10;https://www.youtube.com/watch?v=video3"
+                                rows="4"></textarea>
+
+                            <div class="flex gap-3 mt-4 justify-end">
+                                <button id="cancel-batch-btn"
+                                    class="px-4 py-2 rounded-lg text-gray-400 hover:text-white hover:bg-gray-700 transition-colors">
+                                    Cancel
+                                </button>
+                                <button id="start-batch-btn"
+                                    class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg transition-all shadow-lg hover:shadow-purple-500/25 font-semibold flex items-center gap-2">
+                                    <span>Start Batch</span>
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="batch-progress-area" class="hidden mt-4 space-y-4">
+                            <!-- Progress items will be injected here -->
+                        </div>
+                    </div>
+                </div>
+
+        </div>
+        </section>
+
+        <!-- Enhanced SEO Content Section -->
+        <section class="py-12 bg-transparent mt-12 rounded-xl">
+            <div class="container mx-auto px-4">
+                <h2 class="text-3xl font-bold text-center mb-8 text-white">How to Convert YouTube Videos to MP4</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                    <div class="p-6">
+                        <div class="text-4xl mb-4">📋</div>
+                        <h3 class="text-xl font-bold mb-2 text-red-500">1. Copy YouTube URL</h3>
+                        <p class="text-gray-300">Copy the video link from YouTube, TikTok, or Instagram.</p>
+                    </div>
+                    <div class="p-6">
+                        <div class="text-4xl mb-4">🖱️</div>
+                        <h3 class="text-xl font-bold mb-2 text-red-500">2. Paste & Select Format</h3>
+                        <p class="text-gray-300">Paste the YouTube link above and choose MP4 or MP3 format.</p>
+                    </div>
+                    <div class="p-6">
+                        <div class="text-4xl mb-4">⬇️</div>
+                        <h3 class="text-xl font-bold mb-2 text-red-500">3. Download HD Video</h3>
+                        <p class="text-gray-300">Click Convert and download your high-quality MP4 file.</p>
+                    </div>
+                </div>
+
+                <div class="mt-12 text-center max-w-3xl mx-auto">
+                    <h2 class="text-3xl font-bold mb-6 text-white">Why Use Our YouTube to MP4 Converter?</h2>
+                    <p class="text-gray-300 mb-4">
+                        Our <strong>YouTube to MP4 Converter</strong> is the best tool to download videos in 1080p, 4K,
+                        and 8K quality.
+                        Whether you need to save a tutorial for offline viewing or grab a song for your playlist, we've
+                        got you covered.
+                    </p>
+                    <p class="text-gray-300">
+                        We support multiple platforms including <strong>YouTube, TikTok, Instagram, and Twitch</strong>.
+                        No software installation required – it works directly in your browser on PC, Mac, and Mobile.
+                    </p>
+                </div>
+
+
+            </div>
+        </section>
+
+        </div>
+        <!-- End of Home Page -->
+
+        <!-- FAQ Page (Version améliorée) -->
+        <div id="faq-page" class="separate-page">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                <button class="back-to-home" data-page="home">
+                    ← Back to Home
+                </button>
+                <div class="text-center mb-12">
+                    <h1 class="text-4xl font-extrabold mb-4 important-text">Frequently Asked Questions</h1>
+                    <p class="text-lg text-gray-300 important-text">Find answers to common questions about our YouTube to MP4 converter service</p>
+                </div>
+
+                <div class="content-card max-w-4xl mx-auto">
+                    <div class="faq-item">
+                        <div class="faq-question flex justify-between items-center py-4 cursor-pointer">
+                            <h3 class="text-xl font-semibold">Is it legal to use YouTube to MP4 Converter?</h3>
+                            <span class="faq-chevron transition-transform">▼</span>
+                        </div>
+                        <div class="faq-answer">
+                            <p class="text-gray-300 pb-4">Our service is designed for personal use and educational purposes. Users are responsible for complying with YouTube's Terms of Service and applicable copyright laws. We encourage supporting content creators through official channels when possible.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question flex justify-between items-center py-4 cursor-pointer">
+                            <h3 class="text-xl font-semibold">What video quality options are available?</h3>
+                            <span class="faq-chevron transition-transform">▼</span>
+                        </div>
+                        <div class="faq-answer">
+                            <p class="text-gray-300 pb-4">We support MP4 conversion in 1080p Full HD, 720p HD, and 480p standard quality. The available quality depends on the original video's resolution on the source platform. Higher quality conversions may take slightly longer to process.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question flex justify-between items-center py-4 cursor-pointer">
+                            <h3 class="text-xl font-semibold">Is the service completely free?</h3>
+                            <span class="faq-chevron transition-transform">▼</span>
+                        </div>
+                        <div class="faq-answer">
+                            <p class="text-gray-300 pb-4">Yes, our basic YouTube to MP4 conversion service is completely free with reasonable daily limits to ensure fair usage for all users. We may offer premium features in the future for power users who need higher conversion limits.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question flex justify-between items-center py-4 cursor-pointer">
+                            <h3 class="text-xl font-semibold">What platforms do you support besides YouTube?</h3>
+                            <span class="faq-chevron transition-transform">▼</span>
+                        </div>
+                        <div class="faq-answer">
+                            <p class="text-gray-300 pb-4">In addition to YouTube, we support TikTok, Instagram, Twitch, and several other popular video platforms. Our service continuously updates to support new platforms as they become available and technically feasible.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question flex justify-between items-center py-4 cursor-pointer">
+                            <h3 class="text-xl font-semibold">How long does conversion take?</h3>
+                            <span class="faq-chevron transition-transform">▼</span>
+                        </div>
+                        <div class="faq-answer">
+                            <p class="text-gray-300 pb-4">Most conversions complete within 1-3 minutes depending on video length and quality. Shorter videos typically convert faster, while longer or higher-quality videos may take additional time. Our system is optimized for speed and reliability.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question flex justify-between items-center py-4 cursor-pointer">
+                            <h3 class="text-xl font-semibold">Is there a file size limit?</h3>
+                            <span class="faq-chevron transition-transform">▼</span>
+                        </div>
+                        <div class="faq-answer">
+                            <p class="text-gray-300 pb-4">We support videos up to 2 hours in length for optimal performance. Very large files may take longer to process. If you encounter issues with large videos, try converting to a lower quality setting for faster results.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question flex justify-between items-center py-4 cursor-pointer">
+                            <h3 class="text-xl font-semibold">Do you store my converted videos?</h3>
+                            <span class="faq-chevron transition-transform">▼</span>
+                        </div>
+                        <div class="faq-answer">
+                            <p class="text-gray-300 pb-4">No, we do not permanently store your converted videos. All files are automatically deleted from our servers within 10 minutes of conversion. We prioritize user privacy and data protection in our service design.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question flex justify-between items-center py-4 cursor-pointer">
+                            <h3 class="text-xl font-semibold">Why is my conversion failing?</h3>
+                            <span class="faq-chevron transition-transform">▼</span>
+                        </div>
+                        <div class="faq-answer">
+                            <p class="text-gray-300 pb-4">Conversion failures can occur due to several reasons: invalid URL format, video unavailable in your region, copyright restrictions, or temporary service issues. Ensure you're using a supported platform and the video is publicly accessible.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question flex justify-between items-center py-4 cursor-pointer">
+                            <h3 class="text-xl font-semibold">Can I use this service on mobile devices?</h3>
+                            <span class="faq-chevron transition-transform">▼</span>
+                        </div>
+                        <div class="faq-answer">
+                            <p class="text-gray-300 pb-4">Yes, our service is fully optimized for mobile devices. You can convert and download videos directly from your smartphone or tablet browser. The interface automatically adapts to provide the best experience on any screen size.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question flex justify-between items-center py-4 cursor-pointer">
+                            <h3 class="text-xl font-semibold">How can I report issues or provide feedback?</h3>
+                            <span class="faq-chevron transition-transform">▼</span>
+                        </div>
+                        <div class="faq-answer">
+                            <p class="text-gray-300 pb-4">We welcome user feedback and issue reports. Please use our contact form or email support@youtubetomp4.com with detailed information about any problems you encounter or suggestions for improvement.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- About Us Page -->
+        <div id="about-page" class="separate-page">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                <button class="back-to-home" data-page="home">
+                    ← Back to Home
+                </button>
+                <div class="text-center mb-12">
+                    <h1 class="text-4xl font-extrabold mb-4 important-text">About Our YouTube to MP4 Converter</h1>
+                    <p class="text-lg text-gray-300 important-text">Learn more about our mission and team behind the free YouTube video converter</p>
+                </div>
+
+                <div class="content-card max-w-4xl mx-auto">
+                    <h2 class="text-2xl font-bold mb-4 text-red-500">Our Mission</h2>
+                    <p class="text-gray-300 mb-6">We believe that everyone should have easy access to their favorite online content. Our mission is to provide a simple, fast, and reliable YouTube to MP4 conversion service that works across multiple platforms.</p>
+
+                    <h2 class="text-2xl font-bold mb-4 text-red-500">What We Do</h2>
+                    <p class="text-gray-300 mb-6">YouTube to MP4 Converter offers a comprehensive video conversion solution that supports multiple platforms and formats. Our service is designed to be user-friendly while maintaining high conversion quality for YouTube videos and other platforms.</p>
+
+                    <h2 class="text-2xl font-bold mb-4 text-red-500">Why Choose Our YouTube Converter</h2>
+                    <ul class="text-gray-300 list-disc list-inside space-y-2 mb-6">
+                        <li>Completely free YouTube to MP4 conversion</li>
+                        <li>No registration required</li>
+                        <li>Fast conversion speeds for YouTube videos</li>
+                        <li>Multiple format support (MP4, MP3, WAV)</li>
+                        <li>High-quality output up to 1080p</li>
+                        <li>Regular updates and improvements</li>
+                        <li>User-friendly interface</li>
+                        <li>24/7 service availability</li>
+                    </ul>
+
+                    <h2 class="text-2xl font-bold mb-4 text-red-500">Our Story</h2>
+                    <p class="text-gray-300 mb-6">Founded in 2023, YouTube to MP4 Converter started as a simple project to help friends and family download their favorite YouTube videos. Today, we serve millions of users worldwide with our reliable conversion service.</p>
+
+                    <h2 class="text-2xl font-bold mb-4 text-red-500">Our Values</h2>
+                    <p class="text-gray-300">We believe in transparency, user privacy, and continuous improvement. Our team is dedicated to providing the best possible YouTube to MP4 conversion service while respecting our users' rights and privacy.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Blog Page -->
+        <div id="blog-page" class="separate-page">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                <button class="back-to-home" data-page="home">
+                    ← Back to Home
+                </button>
+                <div class="text-center mb-12">
+                    <h1 class="text-4xl font-extrabold mb-4 important-text">YouTube to MP4 Converter Blog</h1>
+                    <p class="text-lg text-gray-300 important-text">Latest updates and articles about video conversion</p>
+                </div>
+
+                <!-- Blog Search -->
+                <div class="mb-8 px-4">
+                    <input type="text" id="blog-search" placeholder="🔍 Search articles about YouTube to MP4 conversion..."
+                        class="w-full max-w-md mx-auto p-3 bg-gray-700 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none text-white">
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+                    <div class="content-card">
+                        <h3 class="text-xl font-bold mb-3 text-red-500">New Platform Support Added</h3>
+                        <p class="text-gray-300 mb-4">We've recently expanded our platform support to include Twitch and Instagram Reels. Now you can convert content from even more sources!</p>
+                        <span class="text-sm text-gray-400">Published: March 15, 2024</span>
+                    </div>
+
+                    <div class="content-card">
+                        <h3 class="text-xl font-bold mb-3 text-red-500">Improved YouTube Conversion Speed</h3>
+                        <p class="text-gray-300 mb-4">Our latest update has significantly improved YouTube to MP4 conversion speeds. Experience faster downloads with our optimized processing system.</p>
+                        <span class="text-sm text-gray-400">Published: March 10, 2024</span>
+                    </div>
+
+                    <div class="content-card">
+                        <h3 class="text-xl font-bold mb-3 text-red-500">Mobile Experience Enhanced</h3>
+                        <p class="text-gray-300 mb-4">We've completely redesigned our mobile interface to provide a better user experience on smartphones and tablets for YouTube video conversion.</p>
+                        <span class="text-sm text-gray-400">Published: March 5, 2024</span>
+                    </div>
+
+                    <div class="content-card">
+                        <h3 class="text-xl font-bold mb-3 text-red-500">Unlimited Conversions Now Available</h3>
+                        <p class="text-gray-300 mb-4">Good news! We've removed all conversion limits for premium users. Convert as many YouTube videos as you want!</p>
+                        <span class="text-sm text-gray-400">Published: March 1, 2024</span>
+                    </div>
+
+                    <div class="content-card">
+                        <h3 class="text-xl font-bold mb-3 text-red-500">New Audio Formats Supported</h3>
+                        <p class="text-gray-300 mb-4">We now support additional audio formats including WAV and high-quality MP3 conversions for better sound quality from YouTube videos.</p>
+                        <span class="text-sm text-gray-400">Published: February 25, 2024</span>
+                    </div>
+
+                    <div class="content-card">
+                        <h3 class="text-xl font-bold mb-3 text-red-500">User Feedback Implementation</h3>
+                        <p class="text-gray-300 mb-4">Based on your feedback, we've implemented several new features including batch conversion and download history for YouTube videos.</p>
+                        <span class="text-sm text-gray-400">Published: February 20, 2024</span>
+                    </div>
+                </div>
+
+                <!-- SEO Content Section (Blog) -->
+                <section class="py-12 bg-transparent mt-12 rounded-xl">
+                    <div class="container mx-auto px-4">
+                        <h2 class="text-3xl font-bold text-center mb-8 text-white">How to Convert YouTube Videos to MP4</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                            <div class="p-6">
+                                <div class="text-4xl mb-4">📋</div>
+                                <h3 class="text-xl font-bold mb-2 text-red-500">1. Copy YouTube URL</h3>
+                                <p class="text-gray-300">Copy the video link from YouTube, TikTok, or Instagram.</p>
+                            </div>
+                            <div class="p-6">
+                                <div class="text-4xl mb-4">🖱️</div>
+                                <h3 class="text-xl font-bold mb-2 text-red-500">2. Paste & Select</h3>
+                                <p class="text-gray-300">Paste the YouTube link above and choose your preferred format (MP4/MP3).</p>
+                            </div>
+                            <div class="p-6">
+                                <div class="text-4xl mb-4">⬇️</div>
+                                <h3 class="text-xl font-bold mb-2 text-red-500">3. Download</h3>
+                                <p class="text-gray-300">Click Convert and wait for your high-quality MP4 file to be ready.</p>
+                            </div>
+                        </div>
+
+                        <div class="mt-12 text-center max-w-3xl mx-auto">
+                            <h2 class="text-3xl font-bold mb-6 text-white">Why Use Our YouTube to MP4 Converter?</h2>
+                            <p class="text-gray-300 mb-4">
+                                Our <strong>YouTube to MP4 Converter</strong> is the best tool to download videos in 1080p, 4K, and 8K quality.
+                                Whether you need to save a tutorial for offline viewing or grab a song for your playlist, we've got you covered.
+                            </p>
+                            <p class="text-gray-300">
+                                We support multiple platforms including <strong>YouTube, TikTok, Instagram, and Twitch</strong>.
+                                No software installation required – it works directly in your browser on PC, Mac, and Mobile.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <!-- Contact Us Page -->
+        <div id="contact-page" class="separate-page">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                <button class="back-to-home" data-page="home">
+                    ← Back to Home
+                </button>
+                <div class="text-center mb-12">
+                    <h1 class="text-4xl font-extrabold mb-4 important-text">Contact Our YouTube to MP4 Support Team</h1>
+                    <p class="text-lg text-gray-300 important-text">Get in touch with our team for YouTube conversion assistance</p>
+                </div>
+
+                <div class="content-card max-w-4xl mx-auto">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <h2 class="text-2xl font-bold mb-4 text-red-500">Send us a Message</h2>
+                            <form class="space-y-4">
+                                <div>
+                                    <label class="block text-gray-300 mb-2">Name</label>
+                                    <input type="text"
+                                        class="w-full p-3 bg-gray-700 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none"
+                                        placeholder="Your name">
+                                </div>
+                                <div>
+                                    <label class="block text-gray-300 mb-2">Email</label>
+                                    <input type="email"
+                                        class="w-full p-3 bg-gray-700 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none"
+                                        placeholder="Your email">
+                                </div>
+                                <!-- Progress Bar -->
+                                <div id="progress-container" class="hidden mt-8">
+                                    <div class="flex justify-between mb-2 text-sm font-medium text-gray-300">
+                                        <span id="progress-status">Initializing...</span>
+                                        <span id="progress-percentage">0%</span>
+                                    </div>
+                                    <div class="w-full bg-gray-700 rounded-full h-4 overflow-hidden shadow-inner">
+                                        <div id="progress-bar"
+                                            class="bg-gradient-to-r from-red-600 to-orange-500 h-4 rounded-full transition-all duration-300 w-0 relative">
+                                            <div
+                                                class="absolute inset-0 bg-white/30 w-full h-full animate-[shimmer_2s_infinite]">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Snake Game Container -->
+                                    <div id="snake-game-container"
+                                        class="mt-6 bg-black/50 rounded-lg p-4 border border-gray-600 text-center hidden">
+                                        <p class="text-xs text-gray-400 mb-2">⏳ Waiting? Play Snake!</p>
+                                        <canvas id="snake-canvas" width="300" height="150"
+                                            class="mx-auto bg-gray-900 border border-gray-700 rounded shadow-lg"></canvas>
+                                        <p class="text-[10px] text-gray-500 mt-1">Use Arrow Keys to Move</p>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-gray-300 mb-2">Subject</label>
+                                    <input type="text"
+                                        class="w-full p-3 bg-gray-700 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none"
+                                        placeholder="Message subject">
+                                </div>
+                                <div>
+                                    <label class="block text-gray-300 mb-2">Message</label>
+                                    <textarea rows="4"
+                                        class="w-full p-3 bg-gray-700 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none"
+                                        placeholder="Your message about YouTube to MP4 conversion"></textarea>
+                                </div>
+                                <button type="submit"
+                                    class="bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-300">
+                                    Send Message
+                                </button>
+                            </form>
+                        </div>
+
+                        <div>
+                            <h2 class="text-2xl font-bold mb-4 text-red-500">Contact Information</h2>
+                            <div class="space-y-4">
+                                <div>
+                                    <h3 class="font-semibold text-white">Email</h3>
+                                    <p class="text-gray-300">support@youtubetomp4.com</p>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-white">Response Time</h3>
+                                    <p class="text-gray-300">Within 24 hours</p>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-white">Technical Support</h3>
+                                    <p class="text-gray-300">Available 24/7 for urgent YouTube conversion issues</p>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-white">Business Hours</h3>
+                                    <p class="text-gray-300">Monday - Friday: 9:00 AM - 6:00 PM EST</p>
+                                </div>
+                            </div>
+
+                            <div class="mt-8">
+                                <h3 class="text-xl font-bold mb-4 text-red-500">Follow Us</h3>
+                                <div class="flex space-x-4">
+                                    <a href="#" class="text-gray-300 hover:text-white transition-colors">
+                                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                            <path
+                                                d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                                        </svg>
+                                    </a>
+                                    <a href="#" class="text-gray-300 hover:text-white transition-colors">
+                                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                            <path
+                                                d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z" />
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Terms of Use Page (Version améliorée) -->
+        <div id="terms-page" class="separate-page">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                <button class="back-to-home" data-page="home">
+                    ← Back to Home
+                </button>
+                <div class="text-center mb-12">
+                    <h1 class="text-4xl font-extrabold mb-4 important-text">Terms of Service</h1>
+                    <p class="text-lg text-gray-300 important-text">Last updated: March 2024</p>
+                </div>
+
+                <div class="content-card max-w-4xl mx-auto">
+                    <div class="prose prose-invert max-w-none">
+                        <h2 class="text-2xl font-bold mb-4 text-red-500">1. Acceptance of Terms</h2>
+                        <p class="text-gray-300 mb-6">By accessing and using YouTube to MP4 Converter ("the Service"), you acknowledge that you have read, understood, and agree to be bound by these Terms of Service. If you do not agree with any part of these terms, you must discontinue use of our Service immediately.</p>
+
+                        <h2 class="text-2xl font-bold mb-4 text-red-500">2. Service Description</h2>
+                        <p class="text-gray-300 mb-6">YouTube to MP4 Converter provides an online platform that allows users to convert and download video content from various supported platforms. The Service is offered free of charge for personal, non-commercial use with certain limitations.</p>
+
+                        <h2 class="text-2xl font-bold mb-4 text-red-500">3. User Responsibilities</h2>
+                        <p class="text-gray-300 mb-4">As a user of our Service, you agree to:</p>
+                        <ul class="text-gray-300 list-disc list-inside space-y-2 mb-6 ml-4">
+                            <li>Use the Service only for lawful purposes and in compliance with all applicable laws</li>
+                            <li>Respect copyright and intellectual property rights of content creators</li>
+                            <li>Not use the Service for commercial purposes without explicit permission</li>
+                            <li>Not attempt to circumvent any technical limitations or security measures</li>
+                            <li>Not use automated systems or bots to access the Service</li>
+                        </ul>
+
+                        <h2 class="text-2xl font-bold mb-4 text-red-500">4. Intellectual Property</h2>
+                        <p class="text-gray-300 mb-6">The Service and its original content, features, and functionality are owned by YouTube to MP4 Converter and are protected by international copyright, trademark, and other intellectual property laws. You may not reproduce, duplicate, copy, sell, resell, or exploit any portion of the Service without express written permission.</p>
+
+                        <h2 class="text-2xl font-bold mb-4 text-red-500">5. Third-Party Content</h2>
+                        <p class="text-gray-300 mb-6">Our Service enables access to content from third-party platforms. We do not claim ownership of any content converted through our Service. Users are solely responsible for ensuring they have the right to download and use any content obtained through our platform.</p>
+
+                        <h2 class="text-2xl font-bold mb-4 text-red-500">6. Service Limitations</h2>
+                        <p class="text-gray-300 mb-4">We reserve the right to:</p>
+                        <ul class="text-gray-300 list-disc list-inside space-y-2 mb-6 ml-4">
+                            <li>Modify or discontinue the Service at any time without notice</li>
+                            <li>Impose usage limits and restrictions to ensure service quality</li>
+                            <li>Block users who violate these terms or engage in abusive behavior</li>
+                            <li>Update these Terms of Service as needed</li>
+                        </ul>
+
+                        <h2 class="text-2xl font-bold mb-4 text-red-500">7. Disclaimer of Warranties</h2>
+                        <p class="text-gray-300 mb-6">The Service is provided "as is" and "as available" without any warranties of any kind, either express or implied. We do not guarantee that the Service will be uninterrupted, timely, secure, or error-free.</p>
+
+                        <h2 class="text-2xl font-bold mb-4 text-red-500">8. Limitation of Liability</h2>
+                        <p class="text-gray-300 mb-6">To the fullest extent permitted by law, YouTube to MP4 Converter shall not be liable for any indirect, incidental, special, consequential, or punitive damages resulting from your use or inability to use the Service.</p>
+
+                        <h2 class="text-2xl font-bold mb-4 text-red-500">9. Changes to Terms</h2>
+                        <p class="text-gray-300 mb-6">We reserve the right to modify these terms at any time. We will notify users of significant changes by posting the new Terms of Service on this page. Continued use of the Service after changes constitutes acceptance of the modified terms.</p>
+
+                        <h2 class="text-2xl font-bold mb-4 text-red-500">10. Contact Information</h2>
+                        <p class="text-gray-300">For questions about these Terms of Service, please contact us at: legal@youtubetomp4.com</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Privacy Policy Page (Version améliorée) -->
+        <div id="privacy-page" class="separate-page">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                <button class="back-to-home" data-page="home">
+                    ← Back to Home
+                </button>
+                <div class="text-center mb-12">
+                    <h1 class="text-4xl font-extrabold mb-4 important-text">Privacy Policy</h1>
+                    <p class="text-lg text-gray-300 important-text">Last updated: March 2024</p>
+                </div>
+
+                <div class="content-card max-w-4xl mx-auto">
+                    <div class="prose prose-invert max-w-none">
+                        <h2 class="text-2xl font-bold mb-4 text-red-500">1. Information We Collect</h2>
+                        <p class="text-gray-300 mb-6">We collect minimal information to provide and improve our Service:</p>
+                        <ul class="text-gray-300 list-disc list-inside space-y-2 mb-6 ml-4">
+                            <li><strong>Video URLs:</strong> Temporary processing of video links for conversion</li>
+                            <li><strong>Usage Data:</strong> Anonymous analytics about feature usage and service performance</li>
+                            <li><strong>Technical Information:</strong> Browser type, device information, and IP address for security purposes</li>
+                        </ul>
+
+                        <h2 class="text-2xl font-bold mb-4 text-red-500">2. How We Use Information</h2>
+                        <p class="text-gray-300 mb-4">We use collected information to:</p>
+                        <ul class="text-gray-300 list-disc list-inside space-y-2 mb-6 ml-4">
+                            <li>Process video conversion requests</li>
+                            <li>Improve service quality and user experience</li>
+                            <li>Monitor and prevent abuse of our Service</li>
+                            <li>Generate anonymous usage statistics</li>
+                            <li>Ensure compliance with our Terms of Service</li>
+                        </ul>
+
+                        <h2 class="text-2xl font-bold mb-4 text-red-500">3. Data Retention</h2>
+                        <p class="text-gray-300 mb-6">We follow strict data retention policies:</p>
+                        <ul class="text-gray-300 list-disc list-inside space-y-2 mb-6 ml-4">
+                            <li>Video URLs are processed in real-time and not stored</li>
+                            <li>Converted files are automatically deleted within 24 hours</li>
+                            <li>Anonymous analytics data is retained for 12 months</li>
+                            <li>No personal identification information is stored</li>
+                        </ul>
+
+                        <h2 class="text-2xl font-bold mb-4 text-red-500">4. Cookies and Tracking</h2>
+                        <p class="text-gray-300 mb-6">We use minimal cookies and similar technologies:</p>
+                        <ul class="text-gray-300 list-disc list-inside space-y-2 mb-6 ml-4">
+                            <li><strong>Essential Cookies:</strong> Required for basic Service functionality</li>
+                            <li><strong>Analytics Cookies:</strong> Anonymous usage data to improve our Service</li>
+                            <li><strong>Preference Cookies:</strong> Remember your settings and preferences</li>
+                        </ul>
+                        <p class="text-gray-300 mb-6">You can control cookie preferences through your browser settings.</p>
+
+                        <h2 class="text-2xl font-bold mb-4 text-red-500">5. Third-Party Services</h2>
+                        <p class="text-gray-300 mb-6">We may use trusted third-party services for:</p>
+                        <ul class="text-gray-300 list-disc list-inside space-y-2 mb-6 ml-4">
+                            <li>Analytics and performance monitoring</li>
+                            <li>Content delivery and hosting</li>
+                            <li>Security and abuse prevention</li>
+                        </ul>
+                        <p class="text-gray-300 mb-6">These services have their own privacy policies and data handling practices.</p>
+
+                        <h2 class="text-2xl font-bold mb-4 text-red-500">6. Data Security</h2>
+                        <p class="text-gray-300 mb-6">We implement appropriate security measures to protect against unauthorized access, alteration, disclosure, or destruction of your information. However, no internet transmission is completely secure, and we cannot guarantee absolute security.</p>
+
+                        <h2 class="text-2xl font-bold mb-4 text-red-500">7. Your Rights</h2>
+                        <p class="text-gray-300 mb-4">You have the right to:</p>
+                        <ul class="text-gray-300 list-disc list-inside space-y-2 mb-6 ml-4">
+                            <li>Access information we hold about you</li>
+                            <li>Request correction of inaccurate data</li>
+                            <li>Request deletion of your data</li>
+                            <li>Object to processing of your data</li>
+                            <li>Data portability where applicable</li>
+                        </ul>
+
+                        <h2 class="text-2xl font-bold mb-4 text-red-500">8. Children's Privacy</h2>
+                        <p class="text-gray-300 mb-6">Our Service is not directed to individuals under the age of 13. We do not knowingly collect personal information from children under 13. If you become aware that a child has provided us with personal information, please contact us immediately.</p>
+
+                        <h2 class="text-2xl font-bold mb-4 text-red-500">9. International Data Transfers</h2>
+                        <p class="text-gray-300 mb-6">Your information may be transferred to and maintained on computers located outside of your state, province, country, or other governmental jurisdiction where data protection laws may differ. By using our Service, you consent to such transfers.</p>
+
+                        <h2 class="text-2xl font-bold mb-4 text-red-500">10. Changes to This Policy</h2>
+                        <p class="text-gray-300 mb-6">We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the "Last updated" date.</p>
+
+                        <h2 class="text-2xl font-bold mb-4 text-red-500">11. Contact Us</h2>
+                        <p class="text-gray-300">If you have any questions about this Privacy Policy, please contact us at: privacy@youtubetomp4.com</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Legal Notices Page (Version améliorée) -->
+        <div id="legal-page" class="separate-page">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                <button class="back-to-home" data-page="home">
+                    ← Back to Home
+                </button>
+                <div class="text-center mb-12">
+                    <h1 class="text-4xl font-extrabold mb-4 important-text">Legal Notices</h1>
+                    <p class="text-lg text-gray-300 important-text">Important legal information about our service</p>
+                </div>
+
+                <div class="content-card max-w-4xl mx-auto">
+                    <div class="prose prose-invert max-w-none">
+                        <h2 class="text-2xl font-bold mb-4 text-red-500">Copyright Notice</h2>
+                        <p class="text-gray-300 mb-6">All content, design, graphics, and software comprising this Service are the property of YouTube to MP4 Converter or its content suppliers and are protected by international copyright laws. The compilation of all content on this site is the exclusive property of YouTube to MP4 Converter.</p>
+
+                        <h2 class="text-2xl font-bold mb-4 text-red-500">Trademark Information</h2>
+                        <p class="text-gray-300 mb-6">"YouTube to MP4 Converter" and the associated logos are trademarks of our service. All other trademarks, service marks, and logos used on this site are the trademarks, service marks, or logos of their respective owners.</p>
+
+                        <h2 class="text-2xl font-bold mb-4 text-red-500">DMCA Compliance</h2>
+                        <p class="text-gray-300 mb-6">We respect the intellectual property rights of others and comply with the Digital Millennium Copyright Act (DMCA). If you believe that your copyrighted work has been copied in a way that constitutes copyright infringement, please provide our designated agent with the following information:</p>
+                        <ul class="text-gray-300 list-disc list-inside space-y-2 mb-6 ml-4">
+                            <li>A physical or electronic signature of the copyright owner or authorized representative</li>
+                            <li>Identification of the copyrighted work claimed to have been infringed</li>
+                            <li>Identification of the material that is claimed to be infringing</li>
+                            <li>Your contact information including address, telephone number, and email</li>
+                            <li>A statement that you have a good faith belief that use of the material is not authorized</li>
+                            <li>A statement that the information in the notification is accurate</li>
+                        </ul>
+                        <p class="text-gray-300 mb-6">Please send DMCA notices to: dmca@youtubetomp4.com</p>
+
+                        <h2 class="text-2xl font-bold mb-4 text-red-500">Service Disclaimer</h2>
+                        <p class="text-gray-300 mb-6">YouTube to MP4 Converter is an independent service and is not affiliated with, endorsed by, or connected to YouTube, Google, TikTok, Instagram, Twitch, or any other third-party platforms. Our service simply provides tools to access publicly available content.</p>
+
+                        <h2 class="text-2xl font-bold mb-4 text-red-500">User Responsibility</h2>
+                        <p class="text-gray-300 mb-6">Users are solely responsible for ensuring their use of downloaded content complies with all applicable laws, platform terms of service, and copyright regulations. We do not condone or support copyright infringement.</p>
+
+                        <h2 class="text-2xl font-bold mb-4 text-red-500">Service Availability</h2>
+                        <p class="text-gray-300 mb-6">We strive to maintain 24/7 service availability but cannot guarantee uninterrupted access. The Service may be temporarily unavailable due to maintenance, technical issues, or factors beyond our control. We reserve the right to modify or discontinue the Service at any time.</p>
+
+                        <h2 class="text-2xl font-bold mb-4 text-red-500">Geographic Restrictions</h2>
+                        <p class="text-gray-300 mb-6">The Service is intended for users worldwide, but access may be limited in certain jurisdictions due to legal restrictions. Users are responsible for compliance with local laws regarding online content and video downloading.</p>
+
+                        <h2 class="text-2xl font-bold mb-4 text-red-500">Limitation of Liability</h2>
+                        <p class="text-gray-300 mb-6">To the maximum extent permitted by law, YouTube to MP4 Converter shall not be liable for any indirect, incidental, special, consequential, or punitive damages, or any loss of profits or revenues, whether incurred directly or indirectly, or any loss of data, use, goodwill, or other intangible losses.</p>
+
+                        <h2 class="text-2xl font-bold mb-4 text-red-500">Governing Law</h2>
+                        <p class="text-gray-300 mb-6">These legal notices and your use of the Service shall be governed by and construed in accordance with the laws of the jurisdiction where our company is established, without regard to its conflict of law provisions.</p>
+
+                        <h2 class="text-2xl font-bold mb-4 text-red-500">Contact for Legal Inquiries</h2>
+                        <p class="text-gray-300">For legal inquiries, copyright claims, or other legal matters, please contact: legal@youtubetomp4.com</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Old Hero Content Moved Here -->
+    <section class="py-12 bg-black/30 backdrop-blur-sm border-t border-gray-800">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-3xl font-bold mb-4 text-white"><span id="show-fullscreen-logo-footer" class="cursor-pointer hover:scale-105 transition-transform inline-block">youtubetomp4</span> | Free YouTube to MP4 Video Converter | Download HD Videos</h2>
+            <p class="text-gray-300 max-w-3xl mx-auto">
+                Convert YouTube videos to MP4 format quickly and easily. Our YouTube downloader supports 1080p, 720p, and 480p quality.
+            </p>
+            <div id="open-rating-modal" class="mt-6 flex flex-col items-center justify-center animate-fade-in cursor-pointer hover:scale-105 transition-transform group">
+                <div class="flex text-yellow-400 text-2xl mb-2 group-hover:text-yellow-300 transition-colors">
+                    <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+                </div>
+                <div class="text-gray-300 font-medium">
+                    <span class="text-white font-bold text-xl">4.8</span>/5
+                    <span class="text-sm text-gray-400 ml-1 underline decoration-dotted hover:text-white">(Rate Us)</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-transparent backdrop-blur-lg mt-auto border-t border-gray-700/50" role="contentinfo">
+        <div class="container mx-auto py-12 px-4 sm:px-6 lg:px-8 text-gray-300">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 text-center md:text-left">
+                <!-- Column 1: Info -->
+                <div class="md:col-span-1">
+                    <a href="#home" data-page="home" id="footer-logo"
+                        class="text-2xl font-bold brand-font text-red-500 mb-2 inline-flex items-center select-none cursor-pointer">
+                        <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo" class="w-8 h-8 mr-2">
+                        youtubetomp4</a>
+                    <p class="important-text">The simplest way to convert YouTube videos to MP4 format for free.</p>
+
+                </div>
+
+                <!-- Column 2: Navigation -->
+                <div>
+                    <h4 class="font-semibold text-white tracking-wider uppercase mb-4">YouTube Converter</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#about" data-page="about"
+                                class="hover:text-white transition-colors duration-300 focus:outline-none focus:text-white">About
+                                Us</a></li>
+                        <li><a href="#contact" data-page="contact"
+                                class="hover:text-white transition-colors duration-300 focus:outline-none focus:text-white">Contact
+                                Us</a></li>
+                        <li><a href="#faq" data-page="faq"
+                                class="hover:text-white transition-colors duration-300 focus:outline-none focus:text-white">FAQ</a>
+                        </li>
+                        <li><a href="#blog" data-page="blog"
+                                class="hover:text-white transition-colors duration-300 focus:outline-none focus:text-white">Blog</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Column 3: Share -->
+                <div>
+                    <h4 class="font-semibold text-white tracking-wider uppercase mb-4">Share This YouTube Converter</h4>
+                    <div class="flex flex-col items-center md:items-start space-y-2">
+                        <a href="https://facebook.com" target="_blank"
+                            class="inline-flex items-center justify-center w-full max-w-[180px] bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-300 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                            </svg>
+                            Facebook
+                        </a>
+                        <a href="https://twitter.com" target="_blank"
+                            class="inline-flex items-center justify-center w-full max-w-[180px] bg-black hover:bg-gray-800 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-300 focus:ring-2 focus:ring-gray-500 focus:outline-none">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z" />
+                            </svg>
+                            Twitter
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Column 4: Legal -->
+                <div>
+                    <h4 class="font-semibold text-white tracking-wider uppercase mb-4">Legal</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#terms" data-page="terms"
+                                class="hover:text-white transition-colors duration-300 focus:outline-none focus:text-white">Terms
+                                of Use</a></li>
+                        <li><a href="#privacy" data-page="privacy"
+                                class="hover:text-white transition-colors duration-300 focus:outline-none focus:text-white">Privacy
+                                Policy</a></li>
+
+                        <li><a href="#legal" data-page="legal"
+                                class="hover:text-white transition-colors duration-300 focus:outline-none focus:text-white">Legal
+                                Notices</a></li>
+                        <li><a href="/easter-eggs" class="hover:text-purple-400 transition-colors duration-300 focus:outline-none focus:text-purple-400 text-gray-500 text-xs">π</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="mt-8 border-t border-gray-700 pt-8 text-center">
+                <p class="important-text">&copy; 2025 YouTube to MP4 Converter. All Rights Reserved.</p>
+                <p class="text-sm mt-2 text-gray-400">
+                    This YouTube to MP4 conversion service is for personal use only. Users are responsible for complying with the terms of service
+                    of the respective content platforms including YouTube's Terms of Service.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Rating Modal -->
+    <div id="rating-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[9999] hidden flex items-center justify-center opacity-0 transition-opacity duration-300">
+        <div class="bg-gray-800 border border-gray-700 rounded-2xl p-8 max-w-md w-full mx-4 transform scale-95 transition-transform duration-300 shadow-2xl relative">
+            <button id="close-rating-modal" class="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+
+            <div class="text-center">
+                <div class="w-16 h-16 bg-yellow-400/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span class="text-3xl">⭐</span>
+                </div>
+                <h3 class="text-2xl font-bold text-white mb-2">Rate Your Experience</h3>
+                <p class="text-gray-400 mb-6">How was your experience with youtubetomp4?</p>
+
+                <div class="flex justify-center gap-2 mb-8" id="modal-stars">
+                    <button class="text-4xl text-gray-600 hover:text-yellow-400 transition-colors focus:outline-none star-btn transform hover:scale-110 duration-200" data-rating="1">★</button>
+                    <button class="text-4xl text-gray-600 hover:text-yellow-400 transition-colors focus:outline-none star-btn transform hover:scale-110 duration-200" data-rating="2">★</button>
+                    <button class="text-4xl text-gray-600 hover:text-yellow-400 transition-colors focus:outline-none star-btn transform hover:scale-110 duration-200" data-rating="3">★</button>
+                    <button class="text-4xl text-gray-600 hover:text-yellow-400 transition-colors focus:outline-none star-btn transform hover:scale-110 duration-200" data-rating="4">★</button>
+                    <button class="text-4xl text-gray-600 hover:text-yellow-400 transition-colors focus:outline-none star-btn transform hover:scale-110 duration-200" data-rating="5">★</button>
+                </div>
+
+                <textarea id="rating-feedback" class="w-full bg-gray-900/50 border border-gray-700 rounded-lg p-3 text-white mb-4 focus:ring-2 focus:ring-red-500 focus:outline-none resize-none hidden transition-all" rows="3" placeholder="Tell us what you think..."></textarea>
+
+                <button id="submit-rating" class="w-full bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white font-bold py-3 rounded-xl transition-all shadow-lg hover:shadow-red-500/25">
+                    Submit Rating
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

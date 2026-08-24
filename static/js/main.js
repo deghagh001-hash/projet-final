@@ -1,3 +1,8 @@
+// Modules partagés avec la version React (static/js/react_app.jsx) et le build Vite (frontend/src).
+import { showFullscreenLogo, triggerEasterEgg } from './shared/easter-eggs.js';
+import { convertVideo, DEFAULT_FORMAT, filenameFromPath, triggerDownload } from './shared/convert-client.js';
+import { consumeConversion, DAILY_LIMIT, readConversionsLeft } from './shared/daily-limit.js';
+
 // =================================================================================
 // Helper Functions
 // =================================================================================
@@ -120,188 +125,6 @@ function closeRatingModal() {
 }
 
 // =================================================================================
-// Easter Egg Effects
-// =================================================================================
-
-function triggerMatrixEffect() {
-    const canvas = document.createElement('canvas');
-    canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;pointer-events:none;';
-    document.body.appendChild(canvas);
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()';
-    const fontSize = 14;
-    const columns = canvas.width / fontSize;
-    const drops = Array(Math.floor(columns)).fill(1);
-
-    function draw() {
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = '#0F0';
-        ctx.font = `${fontSize}px monospace`;
-        for (let i = 0; i < drops.length; i++) {
-            ctx.fillText(chars[Math.floor(Math.random() * chars.length)], i * fontSize, drops[i] * fontSize);
-            if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
-            drops[i]++;
-        }
-    }
-    const interval = setInterval(draw, 33);
-    setTimeout(() => { clearInterval(interval); canvas.remove(); }, 10000);
-}
-
-function triggerAlgerieEffect() {
-    const img = document.createElement('img');
-    img.src = "/static/img/algerie.jpg";
-    img.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%, -50%);max-width:90%;max-height:90%;z-index:9999;box-shadow: 0 0 50px rgba(0,0,0,0.8); border: 5px solid white;';
-    document.body.appendChild(img);
-    
-    const audio = new Audio("/static/audio/pes.mp3"); // Assuming maybe sound here too? Or just image. Keeping simple.
-    
-    setTimeout(() => img.remove(), 5000);
-}
-
-function initGravityMode() {
-    alert('Gravity mode: This feature requires Matter.js. Simulated effect with an alert.');
-}
-
-function triggerHackEffect() {
-    const overlay = document.createElement('div');
-    overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:#000;color:#0f0;z-index:9999;font-family:monospace;padding:20px;font-size:20px;overflow:hidden;white-space:pre-wrap;';
-    document.body.appendChild(overlay);
-
-    const text = "INITIALIZING HACK TOOL...\nCONNECTING TO SERVER...\nBYPASSING FIREWALL...\nDECRYPTING PASSWORDS...\nACCESSING DATABASE...\n\n> HACK COMPLETE NEO";
-    let i = 0;
-    
-    function typeWriter() {
-        if (i < text.length) {
-            overlay.textContent += text.charAt(i);
-            i++;
-            setTimeout(typeWriter, 50);
-        } else {
-            setTimeout(() => overlay.remove(), 3000);
-        }
-    }
-    typeWriter();
-}
-
-function triggerSilentHillEffect() {
-    const videoOverlay = document.createElement('div');
-    videoOverlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;background:#000;display:flex;align-items:center;justify-content:center;cursor:pointer;';
-    
-    const video = document.createElement('video');
-    video.src = "/static/video/sillent hill.mp4";
-    video.style.cssText = 'max-width:100%;max-height:100%;object-fit:contain;';
-    video.autoplay = true;
-    video.loop = true;
-    video.muted = false;
-    video.volume = 0.3;
-    
-    videoOverlay.appendChild(video);
-    document.body.appendChild(videoOverlay);
-    
-    const cleanup = () => {
-        video.pause();
-        videoOverlay.remove();
-        document.removeEventListener('keydown', cleanup);
-        document.removeEventListener('click', cleanup);
-    };
-    
-    document.addEventListener('keydown', cleanup, { once: true });
-    document.addEventListener('click', cleanup, { once: true });
-}
-
-function triggerPes6Effect() {
-    const audio = new Audio("/static/audio/pes.mp3");
-    audio.volume = 0.05;
-    audio.loop = true;
-    audio.play().catch(e => console.log('Audio play failed:', e));
-
-    const img = document.createElement('img');
-    img.src = "/static/img/pes.webp";
-    img.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%, -50%);max-width:80%;max-height:80%;z-index:10000;box-shadow: 0 0 20px rgba(0,0,0,0.5);';
-    document.body.appendChild(img);
-
-    const cleanup = () => {
-        audio.pause();
-        img.remove();
-        document.removeEventListener('keydown', cleanup);
-        document.removeEventListener('click', cleanup);
-    };
-
-    document.addEventListener('keydown', cleanup, { once: true });
-    document.addEventListener('click', cleanup, { once: true });
-}
-
-
-function showFullscreenLogo() {
-    const overlay = document.createElement('div');
-    overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);z-index:99999;display:flex;align-items:center;justify-content:center;cursor:pointer;';
-    const logo = document.createElement('img');
-    logo.src = "/static/img/logo.png";
-    logo.style.cssText = 'max-width:90%;max-height:90%;object-fit:contain;animation:logoZoom 0.5s ease-out;';
-    const style = document.createElement('style');
-    style.textContent = `@keyframes logoZoom { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }`;
-    document.head.appendChild(style);
-    overlay.appendChild(logo);
-    document.body.appendChild(overlay);
-    
-    // Trigger Confetti - Big Burst Effect
-    setTimeout(() => {
-        if (typeof confetti === 'function') {
-            console.log('Confetti loaded, triggering effect...');
-            // Initial big burst
-            confetti({
-                particleCount: 100,
-                spread: 70,
-                origin: { y: 0.6 },
-                colors: ['#EF4444', '#FFFFFF', '#FFD700'],
-                zIndex: 100000
-            });
-            
-            // Continuous celebration for 3 seconds
-            var duration = 3000;
-            var end = Date.now() + duration;
-            var interval = setInterval(function() {
-                if (Date.now() > end) {
-                    clearInterval(interval);
-                    return;
-                }
-                
-                confetti({
-                    particleCount: 5,
-                    angle: 60,
-                    spread: 55,
-                    origin: { x: 0 },
-                    colors: ['#EF4444', '#FFFFFF', '#FFD700'],
-                    zIndex: 100000
-                });
-                confetti({
-                    particleCount: 5,
-                    angle: 120,
-                    spread: 55,
-                    origin: { x: 1 },
-                    colors: ['#EF4444', '#FFFFFF', '#FFD700'],
-                    zIndex: 100000
-                });
-            }, 50);
-        } else {
-            console.error('Confetti library not loaded!');
-        }
-    }, 100);
-    
-    const closeLogo = () => {
-        overlay.remove();
-        style.remove();
-        document.removeEventListener('keydown', escHandler);
-    };
-
-    overlay.addEventListener('click', closeLogo);
-    const escHandler = e => { if (e.key === 'Escape') closeLogo(); };
-    document.addEventListener('keydown', escHandler);
-}
-
-// =================================================================================
 // Initialization on DOMContentLoaded
 // =================================================================================
 
@@ -394,28 +217,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // Easter Egg Detection
     const urlInput = document.getElementById('video-url');
     if (urlInput) {
-        const easterEggs = {
-            'matrix': triggerMatrixEffect,
-            '123 viva l\'algerie': triggerAlgerieEffect,
-            '123 viva algerie': triggerAlgerieEffect,
-            'gravity': initGravityMode,
-            'hack': triggerHackEffect,
-            'silent hill': triggerSilentHillEffect,
-            'pes 6': triggerPes6Effect,
-            'pes6': triggerPes6Effect
-        };
         urlInput.addEventListener('input', function() {
-            const val = this.value.toLowerCase().trim();
-            if (easterEggs[val]) {
+            if (triggerEasterEgg(this.value)) {
                 this.value = '';
-                easterEggs[val]();
             }
-
-            // Enable/disable format buttons based on URL validity
-            // const isValidUrl = val.startsWith('https://');
-            // document.querySelectorAll('.format-btn').forEach(btn => {
-            //     btn.disabled = !isValidUrl;
-            // });
         });
     }
 
@@ -424,7 +229,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (logoLink) {
         logoLink.addEventListener('click', (e) => {
             e.preventDefault();
-            showFullscreenLogo();
+            showFullscreenLogo({ confetti: window.confetti });
         });
     }
 
@@ -456,7 +261,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('open-rating-modal')?.addEventListener('click', openRatingModal);
     document.getElementById('close-rating-modal')?.addEventListener('click', closeRatingModal);
     document.getElementById('submit-rating')?.addEventListener('click', () => submitRating());
-    document.getElementById('show-fullscreen-logo-footer')?.addEventListener('click', showFullscreenLogo);
+    document.getElementById('show-fullscreen-logo-footer')?.addEventListener('click', () => showFullscreenLogo({ confetti: window.confetti }));
 
     document.getElementById('footer-logo')?.addEventListener('click', (e) => {
         e.preventDefault();
@@ -505,25 +310,12 @@ document.addEventListener('DOMContentLoaded', function() {
 // Conversion Logic & Batch Processing
 // =================================================================================
 
-const maxConversions = 8;
 let conversionsLeft;
 let conversionCount = 0;
 
 function updateConversionsLeft() {
     // On garde un affichage local pour l'UX, mais le serveur est le maître.
-    const stored = localStorage.getItem('conversionsLeft');
-    const lastDate = localStorage.getItem('lastConversionDate');
-    const today = new Date().toDateString();
-
-    if (lastDate !== today) {
-        conversionsLeft = maxConversions;
-        localStorage.setItem('lastConversionDate', today);
-        localStorage.setItem('conversionsLeft', conversionsLeft);
-    } else if (stored !== null) {
-        conversionsLeft = parseInt(stored);
-    } else {
-        conversionsLeft = maxConversions;
-    }
+    conversionsLeft = readConversionsLeft();
 
     document.getElementById('conversions-left').textContent = conversionsLeft;
     const convertBtn = document.getElementById('convert-btn');
@@ -532,7 +324,7 @@ function updateConversionsLeft() {
     // On ne désactive pas le bouton ici pour laisser le serveur gérer l'erreur 429
     // mais on affiche quand même l'info visuelle
     if (conversionsLeft <= 0) {
-        buttonText.textContent = 'Limit Reached (8/8)';
+        buttonText.textContent = `Limit Reached (${DAILY_LIMIT}/${DAILY_LIMIT})`;
         document.getElementById('daily-limit-notice').classList.add('text-red-500');
     } else {
         buttonText.textContent = 'Convert';
@@ -579,122 +371,79 @@ async function startConversion(url, isBatch = false, batchItemElement = null) {
     }
 
     const selectedFormatBtn = document.querySelector('.format-btn.selected');
-    const format = selectedFormatBtn ? selectedFormatBtn.getAttribute('data-format') : 'mp4-1080p';
+    const format = selectedFormatBtn ? selectedFormatBtn.getAttribute('data-format') : DEFAULT_FORMAT;
+
+    const onProgress = (percent, serverStatus) => {
+        if (!isBatch) {
+            progressBar.style.width = `${percent}%`;
+            statusText.textContent = serverStatus || `Converting... ${Math.round(percent)}%`;
+            document.getElementById('conversion-percentage').textContent = `${Math.round(percent)}%`;
+        } else if (batchItemElement) {
+            batchItemElement.querySelector('.status').textContent = `Downloading... ${Math.round(percent)}%`;
+        }
+    };
+
+    const onComplete = (downloadPath) => {
+        if (isBatch) {
+            if (!batchItemElement) return;
+            batchItemElement.querySelector('.status').textContent = 'Completed ✓';
+            batchItemElement.querySelector('.status').className = 'status text-green-400 text-sm font-bold';
+
+            const dlBtn = document.createElement('button');
+            dlBtn.className = 'ml-2 bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-xs transition-colors';
+            dlBtn.textContent = 'Download';
+            dlBtn.onclick = () => triggerDownload(downloadPath);
+            batchItemElement.appendChild(dlBtn);
+            return;
+        }
+
+        progressBar.style.width = '100%';
+        statusText.textContent = 'Conversion Complete!';
+
+        // Update Limit
+        consumeConversion();
+        conversionCount++;
+        updateConversionsLeft();
+
+        if (conversionCount === 3) setTimeout(openRatingModal, 1500);
+
+        setTimeout(() => {
+            progressContainer.style.display = 'none';
+
+            // Show result card immediately (do not restore inputs yet)
+            resultCard.style.display = 'block';
+
+            const filenameDisplay = document.getElementById('result-filename');
+            if (filenameDisplay) {
+                filenameDisplay.textContent = filenameFromPath(downloadPath);
+            }
+
+            const resetUI = () => {
+                resultCard.style.display = 'none';
+                if (urlContainer) urlContainer.style.display = 'flex';
+                if (formatContainers) formatContainers.style.display = 'block';
+                convertBtn.disabled = false;
+                convertBtn.classList.remove('loading');
+                if (urlInput) urlInput.value = '';
+            };
+
+            downloadBtn.onclick = () => {
+                triggerDownload(downloadPath);
+                // Restore UI after download starts (60 seconds delay)
+                setTimeout(resetUI, 60000);
+            };
+
+            const convertAnotherBtn = document.getElementById('convert-another-btn');
+            if (convertAnotherBtn) {
+                convertAnotherBtn.onclick = resetUI;
+            }
+
+            logConversion(url);
+        }, 1000);
+    };
 
     try {
-        const response = await fetch('/api/convert', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ url: url, format: format }),
-        });
-
-        if (!response.ok) {
-            if (response.status === 429) {
-                throw new Error('Daily limit reached (8/8). Please try again tomorrow.');
-            }
-            const err = await response.json();
-            throw new Error(err.error || 'Server error');
-        }
-
-        // Reading the SSE stream
-        const reader = response.body.getReader();
-        const decoder = new TextDecoder();
-        let buffer = '';
-
-        while (true) {
-            const { done, value } = await reader.read();
-            if (done) break;
-
-            buffer += decoder.decode(value, { stream: true });
-            const lines = buffer.split('\\n\\n');
-            buffer = lines.pop(); // Keep incomplete chunk
-
-            for (const line of lines) {
-                if (line.startsWith('data: ')) {
-                    const data = JSON.parse(line.slice(6));
-                    
-                    if (data.type === 'progress') {
-                        const percent = data.value;
-                        if (!isBatch) {
-                            progressBar.style.width = `${percent}%`;
-                            statusText.textContent = data.status || `Converting... ${Math.round(percent)}%`;
-                            document.getElementById('conversion-percentage').textContent = `${Math.round(percent)}%`;
-                        } else if (batchItemElement) {
-                             batchItemElement.querySelector('.status').textContent = `Downloading... ${Math.round(percent)}%`;
-                        }
-                    } else if (data.type === 'complete') {
-                        // Success!
-                        if (!isBatch) {
-                            progressBar.style.width = '100%';
-                            statusText.textContent = 'Conversion Complete!';
-                            
-                            // Update Limit
-                            conversionsLeft--;
-                            conversionCount++;
-                            localStorage.setItem('conversionsLeft', conversionsLeft);
-                            updateConversionsLeft();
-
-                            if (conversionCount === 3) setTimeout(openRatingModal, 1500);
-
-                            setTimeout(() => {
-                                // Hide progress
-                                progressContainer.style.display = 'none';
-
-                                // Show result card immediately (do not restore inputs yet)
-                                resultCard.style.display = 'block';
-
-                                // Extract filename from path
-                                const filename = data.download_path.split(/[\\/]/).pop();
-                                
-                                // Update result card with filename
-                                const filenameDisplay = document.getElementById('result-filename');
-                                if (filenameDisplay) {
-                                    filenameDisplay.textContent = filename;
-                                }
-                                
-                                // Setup Reset Function
-                                const resetUI = () => {
-                                    resultCard.style.display = 'none';
-                                    if (urlContainer) urlContainer.style.display = 'flex';
-                                    if (formatContainers) formatContainers.style.display = 'block';
-                                    convertBtn.disabled = false;
-                                    convertBtn.classList.remove('loading');
-                                    // Optional: clear input
-                                    if (urlInput) urlInput.value = '';
-                                };
-
-                                // Handle Download Button
-                                downloadBtn.onclick = () => {
-                                    triggerDownload(data.download_path);
-                                    // Restore UI after download starts (60 seconds delay)
-                                    setTimeout(resetUI, 60000);
-                                };
-
-                                // Handle Convert Another Button
-                                const convertAnotherBtn = document.getElementById('convert-another-btn');
-                                if (convertAnotherBtn) {
-                                    convertAnotherBtn.onclick = resetUI;
-                                }
-
-                                logConversion(url);
-                            }, 1000);
-                        } else if (batchItemElement) {
-                            batchItemElement.querySelector('.status').textContent = 'Completed ✓';
-                            batchItemElement.querySelector('.status').className = 'status text-green-400 text-sm font-bold';
-                            
-                            const dlBtn = document.createElement('button');
-                            dlBtn.className = 'ml-2 bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-xs transition-colors';
-                            dlBtn.textContent = 'Download';
-                            dlBtn.onclick = () => triggerDownload(data.download_path);
-                            batchItemElement.appendChild(dlBtn);
-                        }
-                    } else if (data.type === 'error') {
-                        throw new Error(data.message);
-                    }
-                }
-            }
-        }
-
+        await convertVideo({ url, format, onProgress, onComplete });
     } catch (error) {
         console.error('Conversion Error:', error);
         if (!isBatch) {
@@ -729,15 +478,6 @@ async function startConversion(url, isBatch = false, batchItemElement = null) {
             convertBtn.classList.remove('loading');
         }
     }
-}
-
-function triggerDownload(path) {
-    const link = document.createElement('a');
-    link.href = '/' + path.replace(/\\/g, '/');
-    link.download = path.split(/[\\/]/).pop();
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
 }
 
 // =================================================================================

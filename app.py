@@ -32,9 +32,10 @@ app = Flask(__name__)
 # request.remote_addr renvoie l'IP du proxy quand l'application est servie derrière
 # un reverse proxy : ProxyFix lit le dernier saut de X-Forwarded-For pour retrouver
 # l'IP réelle du client, indispensable au rate limiting par IP.
-# À n'activer que derrière un proxy de confiance : sans proxy, un client peut forger
-# X-Forwarded-For et contourner la limite quotidienne.
-if os.environ.get('TRUST_PROXY', '1').lower() in ('1', 'true', 'yes'):
+# Désactivé par défaut : sans proxy de confiance devant l'application, un client peut
+# forger X-Forwarded-For et contourner la limite quotidienne. Mettre TRUST_PROXY=1
+# uniquement quand un reverse proxy de confiance renseigne cet en-tête.
+if os.environ.get('TRUST_PROXY', '0').lower() in ('1', 'true', 'yes'):
     app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1)
 
 DOWNLOAD_FOLDER = 'downloads'

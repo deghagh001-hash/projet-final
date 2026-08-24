@@ -73,7 +73,7 @@ Pour l'activer en local uniquement :
 FLASK_DEBUG=1 python app.py
 ```
 
-Variables d'environnement disponibles : `HOST` (défaut `127.0.0.1`), `PORT` (défaut `5000`), `FLASK_DEBUG` (défaut `0`), `TRUST_PROXY` (défaut `1` : lecture de `X-Forwarded-For` via `ProxyFix`, à mettre à `0` si l'application n'est pas derrière un proxy de confiance).
+Variables d'environnement disponibles : `HOST` (défaut `127.0.0.1`), `PORT` (défaut `5000`), `FLASK_DEBUG` (défaut `0`), `TRUST_PROXY` (défaut `0` ; mettre à `1` uniquement derrière un reverse proxy de confiance pour lire l'IP client dans `X-Forwarded-For` via `ProxyFix`).
 
 Les compteurs de rate limiting sont stockés dans `usage.db` (SQLite, créé automatiquement au démarrage).
 
@@ -150,7 +150,7 @@ Accédez à la page secrète : `http://127.0.0.1:5000/react-app` puis cliquez su
 - ⚠️ yt-dlp peut parfois générer des fichiers invalides sous Windows
 - ⚠️ Les threads Flask peuvent bloquer avec yt-dlp (utiliser Gunicorn/Waitress en prod)
 - ⚠️ Babel in-browser est lent (utiliser la version compilée `/react-app`)
-- ⚠️ Le rate limiting utilise `ProxyFix` (`x_for=1`) : ne déployer qu'avec un reverse proxy de confiance, sinon un client peut forger `X-Forwarded-For` (désactivable avec `TRUST_PROXY=0`)
+- ⚠️ Derrière un reverse proxy, activer `TRUST_PROXY=1` (`ProxyFix`, `x_for=1`) pour limiter par IP client réelle ; ne jamais l'activer sans proxy de confiance, un client pourrait forger `X-Forwarded-For` et contourner la limite
 - ⚠️ Les fichiers de `downloads/` sont servis sans authentification : quiconque connaît le nom du fichier peut le récupérer avant son nettoyage automatique
 - ⚠️ La CSP autorise encore `unsafe-eval` sur `/react` (Babel in-browser) et `unsafe-inline` sur `/` (scripts inline JSON-LD/analytics) ; les autres routes, dont `/react-app`, sont en `script-src 'self'`
 

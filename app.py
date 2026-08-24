@@ -8,9 +8,46 @@ import shutil
 import json
 import queue
 from datetime import datetime
+from urllib.parse import urlparse
 
 app = Flask(__name__)
 DOWNLOAD_FOLDER = 'downloads'
+MAX_URL_LENGTH = 2048
+MAX_FILESIZE = 1024 * 1024 * 1024  # 1 GiB
+
+ALLOWED_DOMAINS = ('youtube.com', 'youtu.be', 'tiktok.com', 'instagram.com', 'twitch.tv')
+
+FORMAT_OPTIONS = {
+    'mp4-1080p': {'format': 'bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best'},
+    'mp4-720p': {'format': 'bestvideo[height<=720][ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best'},
+    'mp4-480p': {'format': 'bestvideo[height<=480][ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best'},
+    'mp3-128k': {
+        'format': 'bestaudio/best',
+        'postprocessors': [{'key': 'FFmpegExtractAudio', 'preferredcodec': 'mp3', 'preferredquality': '128'}],
+    },
+    'mp3-320k': {
+        'format': 'bestaudio/best',
+        'postprocessors': [{'key': 'FFmpegExtractAudio', 'preferredcodec': 'mp3', 'preferredquality': '320'}],
+    },
+    'wav': {
+        'format': 'bestaudio/best',
+        'postprocessors': [{'key': 'FFmpegExtractAudio', 'preferredcodec': 'wav'}],
+    },
+}
+
+
+def is_allowed_url(raw_url):
+    """Autoriser uniquement les URLs http(s) dont le domaine est dans la liste blanche."""
+    if not isinstance(raw_url, str) or not raw_url or len(raw_url) > MAX_URL_LENGTH:
+        return False
+    try:
+        parsed = urlparse(raw_url.strip())
+    except ValueError:
+        return False
+    if parsed.scheme not in ('http', 'https'):
+        return False
+    host = (parsed.hostname or '').lower().rstrip('.')
+    return any(host == domain or host.endswith('.' + domain) for domain in ALLOWED_DOMAINS)
 
 # 1. Vérification de FFmpeg
 if not shutil.which('ffmpeg'):
@@ -26,29 +63,24 @@ if not os.path.exists(DOWNLOAD_FOLDER):
 # 2. Système de Rate Limiting (Limitation par IP)
 # Stockage en mémoire : { 'ip_address': { 'date': 'YYYY-MM-DD', 'count': 0 } }
 clients_usage = {}
+usage_lock = threading.Lock()
 DAILY_LIMIT = 8
 
 def check_rate_limit(ip_address):
     today = datetime.now().strftime('%Y-%m-%d')
-    
-    if ip_address not in clients_usage:
-        clients_usage[ip_address] = {'date': today, 'count': 0}
-    
-    client = clients_usage[ip_address]
-    
-    # Réinitialiser si c'est un nouveau jour
-    if client['date'] != today:
-        client['date'] = today
-        client['count'] = 0
-    
-    if client['count'] >= DAILY_LIMIT:
-        return False
-    
-    return True
+
+    with usage_lock:
+        # Purger les entrées des jours précédents pour borner la mémoire utilisée
+        for ip in [ip for ip, client in clients_usage.items() if client['date'] != today]:
+            del clients_usage[ip]
+
+        client = clients_usage.setdefault(ip_address, {'date': today, 'count': 0})
+        return client['count'] < DAILY_LIMIT
 
 def increment_usage(ip_address):
-    if ip_address in clients_usage:
-        clients_usage[ip_address]['count'] += 1
+    with usage_lock:
+        if ip_address in clients_usage:
+            clients_usage[ip_address]['count'] += 1
 
 def cleanup_old_files():
     """Thread d'arrière-plan pour supprimer les fichiers vieux de plus de 10 minutes."""
@@ -89,6 +121,9 @@ def add_security_headers(response):
         "base-uri 'self';"
     )
     response.headers['Content-Security-Policy'] = csp
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    response.headers['X-Frame-Options'] = 'DENY'
+    response.headers['Referrer-Policy'] = 'no-referrer'
     return response
 
 @app.route('/')
@@ -118,18 +153,23 @@ def convert():
     
     # Vérifier la limite AVANT de commencer
     if not check_rate_limit(client_ip):
-        return jsonify({'error': 'Daily limit reached (5/5). Try again tomorrow.'}), 429
+        return jsonify({'error': f'Daily limit reached ({DAILY_LIMIT}/{DAILY_LIMIT}). Try again tomorrow.'}), 429
 
-    data = request.get_json()
+    data = request.get_json(silent=True)
+    if not isinstance(data, dict):
+        return jsonify({'error': 'Invalid JSON body.'}), 400
+
     video_url = data.get('url')
     requested_format = data.get('format', 'mp4-1080p')
 
-    # Validation URL stricte
-    import re
-    ALLOWED_DOMAINS = r'(youtube\.com|youtu\.be|tiktok\.com|instagram\.com|twitch\.tv)'
-    if not re.search(ALLOWED_DOMAINS, video_url):
-        msg_queue.put({'type': 'error', 'message': 'Domain not supported. Only YouTube, TikTok, Instagram, Twitch.'})
-        return Response(stream_with_context(generate()), mimetype='text/event-stream')
+    # Validation stricte de l'URL (schéma + domaine)
+    if not is_allowed_url(video_url):
+        return jsonify({'error': 'Domain not supported. Only YouTube, TikTok, Instagram, Twitch.'}), 400
+
+    if requested_format not in FORMAT_OPTIONS:
+        return jsonify({'error': 'Unsupported format.'}), 400
+
+    video_url = video_url.strip()
 
     # Queue pour communiquer entre le thread de téléchargement et le générateur de réponse
     msg_queue = queue.Queue()
@@ -154,26 +194,12 @@ def convert():
                 'quiet': True,
                 'no_warnings': True,
                 'progress_hooks': [progress_hook],
+                'noplaylist': True,
+                'max_filesize': MAX_FILESIZE,
+                'socket_timeout': 30,
             }
 
-            # Configuration des formats (identique à avant)
-            if requested_format == 'mp4-1080p':
-                ydl_opts['format'] = 'bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best'
-            elif requested_format == 'mp4-720p':
-                ydl_opts['format'] = 'bestvideo[height<=720][ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best'
-            elif requested_format == 'mp4-480p':
-                ydl_opts['format'] = 'bestvideo[height<=480][ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best'
-            elif requested_format == 'mp3-128k':
-                ydl_opts['format'] = 'bestaudio/best'
-                ydl_opts['postprocessors'] = [{'key': 'FFmpegExtractAudio', 'preferredcodec': 'mp3', 'preferredquality': '128'}]
-            elif requested_format == 'mp3-320k':
-                ydl_opts['format'] = 'bestaudio/best'
-                ydl_opts['postprocessors'] = [{'key': 'FFmpegExtractAudio', 'preferredcodec': 'mp3', 'preferredquality': '320'}]
-            elif requested_format == 'wav':
-                ydl_opts['format'] = 'bestaudio/best'
-                ydl_opts['postprocessors'] = [{'key': 'FFmpegExtractAudio', 'preferredcodec': 'wav'}]
-            else:
-                ydl_opts['format'] = 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best'
+            ydl_opts.update(FORMAT_OPTIONS[requested_format])
 
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 info_dict = ydl.extract_info(video_url, download=True)
@@ -210,8 +236,10 @@ def convert():
                 increment_usage(client_ip) # Incrémenter seulement si succès
                 msg_queue.put({'type': 'complete', 'download_path': f'downloads/{basename}'})
 
-        except Exception as e:
-            msg_queue.put({'type': 'error', 'message': str(e)})
+        except Exception:
+            # Ne pas exposer les détails internes (chemins, traces) au client
+            app.logger.exception('Conversion failed for format %s', requested_format)
+            msg_queue.put({'type': 'error', 'message': 'Conversion failed. Please check the URL and try again.'})
 
     # Lancer le téléchargement dans un thread séparé
     thread = threading.Thread(target=run_download)
@@ -238,14 +266,22 @@ def convert():
                     break
                 # If thread is still alive, continue waiting
                 continue
-            except Exception as e:
-                yield f"data: {json.dumps({'type': 'error', 'message': f'Internal server error during streaming: {str(e)}'})}\n\n"
+            except Exception:
+                app.logger.exception('SSE streaming failed')
+                yield f"data: {json.dumps({'type': 'error', 'message': 'Internal server error during streaming.'})}\n\n"
                 break
 
     return Response(stream_with_context(generate()), mimetype='text/event-stream')
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    # Le mode debug expose la console interactive Werkzeug (exécution de code à distance) :
+    # il doit rester désactivé sauf demande explicite en local.
+    debug_enabled = os.environ.get('FLASK_DEBUG', '0').lower() in ('1', 'true', 'yes')
+    app.run(
+        host=os.environ.get('HOST', '127.0.0.1'),
+        port=int(os.environ.get('PORT', 5000)),
+        debug=debug_enabled,
+    )
 
 # PRODUCTION DEPLOYMENT:
 # Use a WSGI server to avoid blocking threads with yt-dlp.

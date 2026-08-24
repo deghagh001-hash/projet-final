@@ -1,0 +1,16 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+node_modules/
+
+# Logs et artefacts d'exécution
+*.log
+downloads/*
+!downloads/.gitkeep
+
+# Secrets
+.env
+.env.*
+!.env.example

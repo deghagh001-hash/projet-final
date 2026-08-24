@@ -9,6 +9,7 @@ node_modules/
 
 # Logs et artefacts d'exécution
 *.log
+usage.db
 downloads/*
 !downloads/.gitkeep
 

@@ -132,11 +132,8 @@ def test_convert_rejects_unsupported_domain(client):
         json={"url": "https://example.com/x", "format": "mp4-1080p"},
     )
 
-    events = sse_events(response)
-    assert any(
-        event["type"] == "error" and "Domain not supported" in event["message"]
-        for event in events
-    )
+    assert response.status_code == 400
+    assert "Domain not supported" in response.get_json()["error"]
 
 
 def test_convert_success_streams_progress_and_increments_usage(

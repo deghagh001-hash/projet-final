@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request, jsonify, send_from_directory, Response, stream_with_context
+from werkzeug.exceptions import HTTPException, NotFound
 import yt_dlp
+import logging
 import os
 import time
 import threading
@@ -16,19 +18,27 @@ from converter import (
     sse_event,
 )
 
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s %(levelname)s [%(name)s] %(message)s',
+)
+logger = logging.getLogger(__name__)
+
 app = Flask(__name__)
 DOWNLOAD_FOLDER = 'downloads'
 
 # 1. Vérification de FFmpeg
 if not shutil.which('ffmpeg'):
-    print("ATTENTION : FFmpeg n'est pas installe ou n'est pas dans le PATH systeme.")
-    print("   Les conversions MP3 et les vidéos haute qualite (1080p+) pourraient echouer.")
+    logger.warning(
+        "FFmpeg n'est pas installe ou n'est pas dans le PATH systeme. "
+        "Les conversions MP3 et les vidéos haute qualite (1080p+) pourraient echouer."
+    )
 else:
-    print("FFmpeg detecte.")
+    logger.info("FFmpeg detecte.")
 
-# Assurer que le dossier de téléchargement existe
-if not os.path.exists(DOWNLOAD_FOLDER):
-    os.makedirs(DOWNLOAD_FOLDER)
+# Assurer que le dossier de téléchargement existe.
+# Une erreur ici est fatale : l'application ne peut rien convertir sans ce dossier.
+os.makedirs(DOWNLOAD_FOLDER, exist_ok=True)
 
 # 2. Système de Rate Limiting (Limitation par IP)
 # Stockage en mémoire : { 'ip_address': { 'date': 'YYYY-MM-DD', 'count': 0 } }
@@ -48,9 +58,14 @@ def check_rate_limit(ip_address):
         return client['count'] < DAILY_LIMIT
 
 def increment_usage(ip_address):
+    today = datetime.now().strftime('%Y-%m-%d')
+
     with usage_lock:
-        if ip_address in clients_usage:
-            clients_usage[ip_address]['count'] += 1
+        client = clients_usage.setdefault(ip_address, {'date': today, 'count': 0})
+        if client['date'] != today:
+            client['date'] = today
+            client['count'] = 0
+        client['count'] += 1
 
 def cleanup_old_files():
     """Thread d'arrière-plan pour supprimer les fichiers vieux de plus de 10 minutes."""
@@ -67,11 +82,11 @@ def cleanup_old_files():
                         if file_age > 600:  # 10 minutes
                             try:
                                 os.remove(file_path)
-                                print(f"Deleted old file: {filename}")
-                            except Exception as e:
-                                print(f"Error deleting {filename}: {e}")
-        except Exception as e:
-            print(f"Error in cleanup loop: {e}")
+                                logger.info("Deleted old file: %s", filename)
+                            except OSError:
+                                logger.exception("Error deleting %s", filename)
+        except Exception:
+            logger.exception("Error in cleanup loop")
         time.sleep(60)
 
 # Démarrer le thread de nettoyage
@@ -116,7 +131,20 @@ def react_assets(filename):
 
 @app.route('/downloads/<path:filename>')
 def download_file(filename):
-    return send_from_directory(DOWNLOAD_FOLDER, filename, as_attachment=True)
+    try:
+        return send_from_directory(DOWNLOAD_FOLDER, filename, as_attachment=True)
+    except NotFound:
+        logger.warning("Requested download not found (expired or never created): %s", filename)
+        return jsonify({'error': 'File not found. It may have expired, please convert again.'}), 404
+
+
+@app.errorhandler(Exception)
+def handle_unexpected_error(error):
+    """Journalise toute exception non gérée et renvoie une erreur JSON exploitable."""
+    if isinstance(error, HTTPException):
+        return error
+    logger.exception("Unhandled error while serving %s", request.path)
+    return jsonify({'error': 'Internal server error'}), 500
 
 # 3. Route de conversion avec Streaming (SSE) pour la barre de progression réelle
 @app.route('/api/convert', methods=['POST'])
@@ -129,10 +157,14 @@ def convert():
 
     data = request.get_json(silent=True)
     if not isinstance(data, dict):
-        return jsonify({'error': 'Invalid JSON body.'}), 400
+        return jsonify({'error': 'Invalid request body: expected a JSON object.'}), 400
 
     video_url = data.get('url')
     requested_format = data.get('format', 'mp4-1080p')
+
+    if not isinstance(video_url, str) or not video_url.strip():
+        return jsonify({'error': 'Missing required field: url.'}), 400
+    video_url = video_url.strip()
 
     # Validation URL stricte (schéma + domaine)
     if not is_supported_url(video_url):
@@ -141,12 +173,11 @@ def convert():
     if not is_supported_format(requested_format):
         return jsonify({'error': 'Unsupported format.'}), 400
 
-    video_url = video_url.strip()
-
     # Queue pour communiquer entre le thread de téléchargement et le générateur de réponse
     msg_queue = queue.Queue()
 
     def run_download():
+        terminal_message_sent = False
         try:
             # Hook de progression pour yt-dlp
             def progress_hook(d):
@@ -155,7 +186,8 @@ def convert():
                     p = d.get('_percent_str', '0%').replace('%', '')
                     try:
                         percent = float(p)
-                    except:
+                    except (TypeError, ValueError):
+                        logger.debug("Could not parse yt-dlp percent value %r", p)
                         percent = 0
                     msg_queue.put({'type': 'progress', 'value': percent, 'status': 'Downloading...'})
                 elif d['status'] == 'finished':
@@ -174,11 +206,17 @@ def convert():
 
                 increment_usage(client_ip) # Incrémenter seulement si succès
                 msg_queue.put({'type': 'complete', 'download_path': f'downloads/{basename}'})
+                terminal_message_sent = True
 
         except Exception:
             # Ne pas exposer les détails internes (chemins, traces) au client
-            app.logger.exception('Conversion failed for format %s', requested_format)
+            logger.exception("Conversion failed for %s (format=%s)", video_url, requested_format)
             msg_queue.put({'type': 'error', 'message': 'Conversion failed. Please check the URL and try again.'})
+            terminal_message_sent = True
+        finally:
+            # Le client attend toujours un évènement terminal : ne jamais le laisser en suspens.
+            if not terminal_message_sent:
+                msg_queue.put({'type': 'error', 'message': 'Conversion ended unexpectedly.'})
 
     # Lancer le téléchargement dans un thread séparé
     thread = threading.Thread(target=run_download)
@@ -200,12 +238,13 @@ def convert():
                 # This can happen if yt-dlp fails silently or takes too long
                 if not thread.is_alive():
                     # If thread is dead and queue is empty, assume an error occurred that wasn't caught by the hook
+                    logger.error("Download thread for %s died without emitting a terminal event", video_url)
                     yield sse_error('Conversion process failed or timed out.')
                     break
                 # If thread is still alive, continue waiting
                 continue
             except Exception:
-                app.logger.exception('SSE streaming failed')
+                logger.exception("Internal error while streaming progress for %s", video_url)
                 yield sse_error('Internal server error during streaming.')
                 break
 

@@ -37,9 +37,14 @@ export async function convertVideo({ url, format = DEFAULT_FORMAT, onProgress, o
 
     if (!response.ok) {
         if (response.status === 429) throw new Error('Daily limit reached. Please try again tomorrow.');
-        const err = await response.json().catch(() => ({}));
-        throw new Error(err.error || 'Server error');
+        const err = await response.json().catch((parseError) => {
+            console.error('Could not parse error response:', parseError);
+            return {};
+        });
+        throw new Error(err.error || `Server error (HTTP ${response.status})`);
     }
+
+    if (!response.body) throw new Error('Streaming is not supported by this browser.');
 
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
@@ -57,7 +62,13 @@ export async function convertVideo({ url, format = DEFAULT_FORMAT, onProgress, o
         for (const raw of chunks) {
             const chunk = raw.trim();
             if (!chunk.startsWith('data: ')) continue;
-            const data = JSON.parse(chunk.slice(6));
+            let data;
+            try {
+                data = JSON.parse(chunk.slice(6));
+            } catch (parseError) {
+                console.error('Malformed server event:', chunk, parseError);
+                throw new Error('Received a malformed response from the server.');
+            }
 
             if (data.type === 'progress') {
                 if (onProgress) onProgress(data.value, data.status);
@@ -68,6 +79,12 @@ export async function convertVideo({ url, format = DEFAULT_FORMAT, onProgress, o
                 throw new Error(data.message);
             }
         }
+    }
+
+    // Le flux peut se fermer sans évènement terminal (serveur redémarré, proxy, réseau) :
+    // sans cette vérification l'appelant recevrait `null` comme si tout allait bien.
+    if (!downloadPath) {
+        throw new Error('Connection closed before the conversion finished.');
     }
 
     return downloadPath;

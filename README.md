@@ -8,7 +8,7 @@ Application web Flask + React pour convertir des vidéos YouTube, TikTok, Instag
 - ✅ Conversion audio (MP3 128k, 320k, WAV)
 - ✅ Support multi-plateformes (YouTube, TikTok, Instagram, Twitch)
 - ✅ Barre de progression en temps réel (Server-Sent Events)
-- ✅ Limite quotidienne (5 conversions/jour par IP)
+- ✅ Limite quotidienne (8 conversions/jour par IP, persistée dans SQLite)
 - ✅ Nettoyage automatique des fichiers (10 minutes)
 - ✅ Easter Eggs cachés (Matrix, Silent Hill, etc.)
 - ✅ Interface React moderne avec Tailwind CSS
@@ -73,7 +73,9 @@ Pour l'activer en local uniquement :
 FLASK_DEBUG=1 python app.py
 ```
 
-Variables d'environnement disponibles : `HOST` (défaut `127.0.0.1`), `PORT` (défaut `5000`), `FLASK_DEBUG` (défaut `0`).
+Variables d'environnement disponibles : `HOST` (défaut `127.0.0.1`), `PORT` (défaut `5000`), `FLASK_DEBUG` (défaut `0`), `TRUST_PROXY` (défaut `0` ; mettre à `1` uniquement derrière un reverse proxy de confiance pour lire l'IP client dans `X-Forwarded-For` via `ProxyFix`).
+
+Les compteurs de rate limiting sont stockés dans `usage.db` (SQLite, créé automatiquement au démarrage).
 
 ### Versions disponibles
 
@@ -138,7 +140,7 @@ Accédez à la page secrète : `http://127.0.0.1:5000/react-app` puis cliquez su
 - ✅ Validation du format demandé (liste blanche)
 - ✅ Messages d'erreur génériques côté client (détails uniquement dans les logs serveur)
 - ✅ Mode debug désactivé par défaut
-- ✅ Rate limiting (8 conversions/jour/IP)
+- ✅ Rate limiting (8 conversions/jour/IP, compteurs persistés dans `usage.db`, purge quotidienne)
 - ✅ Vérification de la taille des fichiers téléchargés
 - ✅ Nettoyage automatique des fichiers temporaires
 - ✅ Domaines autorisés uniquement (YouTube, TikTok, Instagram, Twitch)
@@ -148,9 +150,9 @@ Accédez à la page secrète : `http://127.0.0.1:5000/react-app` puis cliquez su
 - ⚠️ yt-dlp peut parfois générer des fichiers invalides sous Windows
 - ⚠️ Les threads Flask peuvent bloquer avec yt-dlp (utiliser Gunicorn/Waitress en prod)
 - ⚠️ Babel in-browser est lent (utiliser la version compilée `/react-app`)
-- ⚠️ Le rate limiting est en mémoire et basé sur `request.remote_addr` : derrière un reverse proxy, utiliser `ProxyFix` et un stockage partagé (Redis)
+- ⚠️ Derrière un reverse proxy, activer `TRUST_PROXY=1` (`ProxyFix`, `x_for=1`) pour limiter par IP client réelle ; ne jamais l'activer sans proxy de confiance, un client pourrait forger `X-Forwarded-For` et contourner la limite
 - ⚠️ Les fichiers de `downloads/` sont servis sans authentification : quiconque connaît le nom du fichier peut le récupérer avant son nettoyage automatique
-- ⚠️ La CSP autorise encore `unsafe-inline` / `unsafe-eval` (requis par Tailwind CDN et Babel in-browser)
+- ⚠️ La CSP autorise encore `unsafe-eval` sur `/react` (Babel in-browser) et `unsafe-inline` sur `/` (scripts inline JSON-LD/analytics) ; les autres routes, dont `/react-app`, sont en `script-src 'self'`
 
 ## 📁 Structure du projet
 
@@ -158,6 +160,7 @@ Accédez à la page secrète : `http://127.0.0.1:5000/react-app` puis cliquez su
 projet/
 ├── app.py                  # Backend Flask
 ├── requirements.txt        # Dépendances Python
+├── usage.db                # Compteurs de rate limiting (SQLite, auto-créé)
 ├── downloads/              # Fichiers téléchargés (auto-nettoyés)
 ├── static/
 │   ├── css/               # Styles
@@ -205,7 +208,7 @@ projet/
 
 ## 📝 Licence
 
-MIT License - Libre d'utilisation
+GPLv3 - voir le fichier LICENSE
 
 ## 👨‍💻 Développement
 

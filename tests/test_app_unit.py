@@ -8,10 +8,29 @@ import app
 
 
 @pytest.fixture(autouse=True)
-def clear_client_usage():
-    app.clients_usage.clear()
+def usage_db(monkeypatch, tmp_path):
+    monkeypatch.setattr(app, "USAGE_DB", str(tmp_path / "usage.db"))
+    app.init_usage_db()
     yield
-    app.clients_usage.clear()
+
+
+def usage_count(ip_address, date=None):
+    date = date or app.datetime.now().strftime("%Y-%m-%d")
+    with app.closing(app._usage_connection()) as conn:
+        row = conn.execute(
+            "SELECT count FROM usage WHERE ip = ? AND date = ?", (ip_address, date)
+        ).fetchone()
+    return row[0] if row else 0
+
+
+def set_usage(ip_address, count, date=None):
+    date = date or app.datetime.now().strftime("%Y-%m-%d")
+    with app.closing(app._usage_connection()) as conn:
+        with conn:
+            conn.execute(
+                "INSERT INTO usage (ip, date, count) VALUES (?, ?, ?)",
+                (ip_address, date, count),
+            )
 
 
 @pytest.fixture
@@ -27,47 +46,50 @@ def sse_events(response):
     ]
 
 
-def test_check_rate_limit_registers_unseen_ip():
+def test_check_rate_limit_allows_unseen_ip():
     assert app.check_rate_limit("192.0.2.1") is True
-    assert app.clients_usage["192.0.2.1"]["count"] == 0
+    assert usage_count("192.0.2.1") == 0
 
 
 def test_check_rate_limit_allows_count_below_daily_limit():
-    app.clients_usage["192.0.2.2"] = {
-        "date": app.datetime.now().strftime("%Y-%m-%d"),
-        "count": app.DAILY_LIMIT - 1,
-    }
+    set_usage("192.0.2.2", app.DAILY_LIMIT - 1)
 
     assert app.check_rate_limit("192.0.2.2") is True
 
 
 def test_check_rate_limit_rejects_count_at_daily_limit():
-    app.clients_usage["192.0.2.3"] = {
-        "date": app.datetime.now().strftime("%Y-%m-%d"),
-        "count": app.DAILY_LIMIT,
-    }
+    set_usage("192.0.2.3", app.DAILY_LIMIT)
 
     assert app.check_rate_limit("192.0.2.3") is False
 
 
-def test_check_rate_limit_resets_stale_entry():
-    app.clients_usage["192.0.2.4"] = {"date": "2000-01-01", "count": app.DAILY_LIMIT}
+def test_check_rate_limit_ignores_previous_days():
+    set_usage("192.0.2.4", app.DAILY_LIMIT, date="2000-01-01")
 
     assert app.check_rate_limit("192.0.2.4") is True
-    assert app.clients_usage["192.0.2.4"]["count"] == 0
-    assert app.clients_usage["192.0.2.4"]["date"] == app.datetime.now().strftime("%Y-%m-%d")
 
 
-def test_increment_usage_increments_existing_ip():
-    app.clients_usage["192.0.2.5"] = {"date": "today", "count": 2}
-
+def test_increment_usage_creates_then_increments_entry():
+    app.increment_usage("192.0.2.5")
     app.increment_usage("192.0.2.5")
 
-    assert app.clients_usage["192.0.2.5"]["count"] == 3
+    assert usage_count("192.0.2.5") == 2
 
 
-def test_increment_usage_ignores_unknown_ip():
+def test_usage_counts_persist_across_connections():
     app.increment_usage("192.0.2.6")
+
+    assert usage_count("192.0.2.6") == 1
+
+
+def test_purge_old_usage_keeps_only_today():
+    set_usage("192.0.2.7", 3, date="2000-01-01")
+    set_usage("192.0.2.8", 4)
+
+    app.purge_old_usage()
+
+    assert usage_count("192.0.2.7", date="2000-01-01") == 0
+    assert usage_count("192.0.2.8") == 4
 
 
 def test_security_headers_are_added(client):
@@ -77,6 +99,20 @@ def test_security_headers_are_added(client):
     assert "default-src 'self'" in csp
     assert "object-src 'none'" in csp
     assert "frame-ancestors 'none'" in csp
+
+
+def test_csp_allows_unsafe_eval_only_on_babel_react_route(client):
+    babel_csp = client.get("/react").headers["Content-Security-Policy"]
+    classic_csp = client.get("/").headers["Content-Security-Policy"]
+
+    assert "'unsafe-eval'" in babel_csp
+    assert "'unsafe-eval'" not in classic_csp
+    assert "'unsafe-inline'" in classic_csp.split("script-src")[1].split(";")[0]
+
+
+def test_csp_script_src_is_strict_on_other_routes():
+    assert app.build_script_src("/react-app") == "'self'"
+    assert "'unsafe-inline'" not in app.build_script_src("/downloads/x.mp4")
 
 
 def test_index_page_renders(client):
@@ -112,10 +148,7 @@ def test_download_file_returns_not_found_for_missing_file(monkeypatch, tmp_path,
 
 
 def test_convert_rejects_rate_limited_client(client):
-    app.clients_usage["127.0.0.1"] = {
-        "date": app.datetime.now().strftime("%Y-%m-%d"),
-        "count": app.DAILY_LIMIT,
-    }
+    set_usage("127.0.0.1", app.DAILY_LIMIT)
 
     response = client.post(
         "/api/convert",
@@ -177,7 +210,7 @@ def test_convert_success_streams_progress_and_increments_usage(
     complete_events = [event for event in events if event["type"] == "complete"]
     assert progress_values == [42.0, 0, 100]
     assert complete_events == [{"type": "complete", "download_path": "downloads/video.mp4"}]
-    assert app.clients_usage["127.0.0.1"]["count"] == 1
+    assert usage_count("127.0.0.1") == 1
 
 
 def test_convert_mp3_configures_audio_postprocessor_and_download_path(
@@ -277,7 +310,7 @@ def test_convert_failure_streams_generic_error_and_does_not_increment(
     assert errors
     # Les détails de l'exception (chemins, traces) ne doivent pas fuir vers le client.
     assert all("download failed" not in event["message"] for event in errors)
-    assert app.clients_usage["127.0.0.1"]["count"] == 0
+    assert usage_count("127.0.0.1") == 0
 
 
 def test_convert_empty_file_streams_error_and_does_not_increment(
@@ -312,12 +345,13 @@ def test_convert_empty_file_streams_error_and_does_not_increment(
 
     events = sse_events(response)
     assert any(event["type"] == "error" for event in events)
-    assert app.clients_usage["127.0.0.1"]["count"] == 0
+    assert usage_count("127.0.0.1") == 0
 
 
 def test_cleanup_old_files_removes_only_files_older_than_ten_minutes(
     monkeypatch, tmp_path
 ):
+    set_usage("192.0.2.9", 2, date="2000-01-01")
     monkeypatch.setattr(app, "DOWNLOAD_FOLDER", str(tmp_path))
     old_file = tmp_path / "old.mp4"
     fresh_file = tmp_path / "fresh.mp4"
@@ -335,3 +369,4 @@ def test_cleanup_old_files_removes_only_files_older_than_ten_minutes(
 
     assert not old_file.exists()
     assert fresh_file.exists()
+    assert usage_count("192.0.2.9", date="2000-01-01") == 0

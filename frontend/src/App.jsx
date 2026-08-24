@@ -1,169 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import confetti from 'canvas-confetti';
 
-// ==========================================
-// UTILS: Easter Egg Effects
-// ==========================================
-const triggerMatrixEffect = () => {
-    const canvas = document.createElement('canvas');
-    canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;pointer-events:none;';
-    document.body.appendChild(canvas);
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()';
-    const fontSize = 14;
-    const columns = canvas.width / fontSize;
-    const drops = Array(Math.floor(columns)).fill(1);
+// Logique partagée avec la version classique (static/js/main.js) et la version
+// React in-browser (static/js/react_app.jsx).
+import { showFullscreenLogo, triggerEasterEgg } from '../../static/js/shared/easter-eggs.js';
+import { AUDIO_FORMATS, DEFAULT_FORMAT, VIDEO_FORMATS, convertVideo, filenameFromPath } from '../../static/js/shared/convert-client.js';
+import { DAILY_LIMIT, consumeConversion, readConversionsLeft } from '../../static/js/shared/daily-limit.js';
 
-    function draw() {
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = '#0F0';
-        ctx.font = `${fontSize}px monospace`;
-        for (let i = 0; i < drops.length; i++) {
-            ctx.fillText(chars[Math.floor(Math.random() * chars.length)], i * fontSize, drops[i] * fontSize);
-            if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
-            drops[i]++;
-        }
-    }
-    const interval = setInterval(draw, 33);
-    setTimeout(() => { clearInterval(interval); canvas.remove(); }, 10000);
-};
-
-const triggerSilentHillEffect = () => {
-    const videoOverlay = document.createElement('div');
-    videoOverlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;background:#000;display:flex;align-items:center;justify-content:center;cursor:pointer;';
-    
-    const video = document.createElement('video');
-    video.src = "/static/video/sillent hill.mp4";
-    video.style.cssText = 'max-width:100%;max-height:100%;object-fit:contain;';
-    video.autoplay = true;
-    video.loop = true;
-    video.muted = false;
-    video.volume = 0.3;
-    
-    videoOverlay.appendChild(video);
-    document.body.appendChild(videoOverlay);
-    
-    const cleanup = () => {
-        video.pause();
-        videoOverlay.remove();
-        document.removeEventListener('keydown', cleanup);
-        document.removeEventListener('click', cleanup);
-    };
-    
-    document.addEventListener('keydown', cleanup, { once: true });
-    document.addEventListener('click', cleanup, { once: true });
-};
-
-const triggerHackEffect = () => {
-    const overlay = document.createElement('div');
-    overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:#000;color:#0f0;z-index:9999;font-family:monospace;padding:20px;font-size:20px;overflow:hidden;white-space:pre-wrap;';
-    document.body.appendChild(overlay);
-
-    const text = "INITIALIZING HACK TOOL...\nCONNECTING TO SERVER...\nBYPASSING FIREWALL...\nDECRYPTING PASSWORDS...\nACCESSING DATABASE...\n\n> HACK COMPLETE NEO";
-    let i = 0;
-    
-    function typeWriter() {
-        if (i < text.length) {
-            overlay.textContent += text.charAt(i);
-            i++;
-            setTimeout(typeWriter, 50);
-        } else {
-            setTimeout(() => overlay.remove(), 3000);
-        }
-    }
-    typeWriter();
-};
-
-const triggerAlgerieEffect = () => {
-    const img = document.createElement('img');
-    img.src = "/static/img/algerie.jpg";
-    img.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%, -50%);max-width:90%;max-height:90%;z-index:9999;box-shadow: 0 0 50px rgba(0,0,0,0.8); border: 5px solid white;';
-    document.body.appendChild(img);
-    setTimeout(() => img.remove(), 5000);
-};
-
-const triggerPes6Effect = () => {
-    const audio = new Audio("/static/audio/pes.mp3");
-    audio.volume = 0.05;
-    audio.loop = true;
-    audio.play().catch(e => console.log('Audio play failed:', e));
-
-    const img = document.createElement('img');
-    img.src = "/static/img/pes.webp";
-    img.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%, -50%);max-width:80%;max-height:80%;z-index:10000;box-shadow: 0 0 20px rgba(0,0,0,0.5);';
-    document.body.appendChild(img);
-
-    const cleanup = () => {
-        audio.pause();
-        img.remove();
-        document.removeEventListener('keydown', cleanup);
-        document.removeEventListener('click', cleanup);
-    };
-
-    document.addEventListener('keydown', cleanup, { once: true });
-    document.addEventListener('click', cleanup, { once: true });
-};
-
-const showFullscreenLogo = () => {
-    const overlay = document.createElement('div');
-    overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);z-index:99999;display:flex;align-items:center;justify-content:center;cursor:pointer;';
-    const logo = document.createElement('img');
-    logo.src = "/static/img/logo.png";
-    logo.style.cssText = 'max-width:90%;max-height:90%;object-fit:contain;animation:logoZoom 0.5s ease-out;';
-    
-    if (!document.getElementById('logo-anim-style')) {
-        const style = document.createElement('style');
-        style.id = 'logo-anim-style';
-        style.textContent = '@keyframes logoZoom { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }';
-        document.head.appendChild(style);
-    }
-
-    overlay.appendChild(logo);
-    document.body.appendChild(overlay);
-    
-    // Trigger Confetti - Big Burst Effect
-    var duration = 3000;
-    var end = Date.now() + duration;
-    
-    // Initial big burst
-    confetti({
-        particleCount: 100,
-        spread: 70,
-        origin: { y: 0.6 },
-        colors: ['#EF4444', '#FFFFFF', '#FFD700'],
-        zIndex: 100000
-    });
-    
-    // Continuous celebration for 3 seconds
-    var interval = setInterval(function() {
-        if (Date.now() > end) {
-            clearInterval(interval);
-            return;
-        }
-        
-        confetti({
-            particleCount: 5,
-            angle: 60,
-            spread: 55,
-            origin: { x: 0 },
-            colors: ['#EF4444', '#FFFFFF', '#FFD700'],
-            zIndex: 100000
-        });
-        confetti({
-            particleCount: 5,
-            angle: 120,
-            spread: 55,
-            origin: { x: 1 },
-            colors: ['#EF4444', '#FFFFFF', '#FFD700'],
-            zIndex: 100000
-        });
-    }, 50);
-    
-    overlay.onclick = () => overlay.remove();
-};
 
 // ==========================================
 // COMPOSANT : TOAST (Error Handling)
@@ -198,7 +41,7 @@ function Header({ themeColor, setThemeColor, currentPage, setPage }) {
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between h-16">
                     <div className="flex-shrink-0 flex items-center gap-4">
-                        <a href="#" onClick={(e) => { e.preventDefault(); showFullscreenLogo(); }} className="text-2xl font-bold text-red-500 flex items-center" style={{color: themeColor}}>
+                        <a href="#" onClick={(e) => { e.preventDefault(); showFullscreenLogo({ confetti }); }} className="text-2xl font-bold text-red-500 flex items-center" style={{color: themeColor}}>
                             <span className="cursor-pointer hover:scale-105 transition-transform">youtubetomp4</span>
                         </a>
                         
@@ -259,47 +102,52 @@ function Header({ themeColor, setThemeColor, currentPage, setPage }) {
 }
 
 // ==========================================
+// COMPOSANT : SELECTEUR DE FORMAT
+// ==========================================
+function FormatGroup({ title, formats, selected, onSelect }) {
+    return (
+        <div className="bg-gray-800/50 p-4 rounded-lg">
+            <h4 className="text-red-500 font-bold mb-3">{title}</h4>
+            <div className="flex flex-wrap gap-2 justify-center">
+                {formats.map(f => (
+                    <button
+                        key={f}
+                        onClick={() => onSelect(f)}
+                        className={`px-3 py-1 rounded text-sm border ${selected === f ? 'bg-red-600 border-red-600 text-white' : 'border-gray-600 text-gray-300 hover:bg-gray-700'}`}
+                    >
+                        {f.toUpperCase()}
+                    </button>
+                ))}
+            </div>
+        </div>
+    );
+}
+
+// ==========================================
 // COMPOSANT : CONVERTER
 // ==========================================
 function Converter({ onError }) {
     const [url, setUrl] = useState('');
     const [platform, setPlatform] = useState('youtube');
-    const [format, setFormat] = useState('mp4-1080p');
+    const [format, setFormat] = useState(DEFAULT_FORMAT);
     const [loading, setLoading] = useState(false);
     const [progress, setProgress] = useState(0);
     const [status, setStatus] = useState('');
     const [result, setResult] = useState(null);
-    const [conversionsLeft, setConversionsLeft] = useState(5);
+    const [conversionsLeft, setConversionsLeft] = useState(DAILY_LIMIT);
 
     useEffect(() => {
-        const stored = localStorage.getItem('conversionsLeft');
-        const lastDate = localStorage.getItem('lastConversionDate');
-        const today = new Date().toDateString();
-
-        if (lastDate !== today) {
-            localStorage.setItem('lastConversionDate', today);
-            localStorage.setItem('conversionsLeft', 5);
-            setConversionsLeft(5);
-        } else if (stored !== null) {
-            setConversionsLeft(parseInt(stored));
-        }
+        setConversionsLeft(readConversionsLeft());
     }, []);
 
     const handleUrlChange = (e) => {
         const val = e.target.value;
-        setUrl(val);
-        
-        const lowerVal = val.toLowerCase().trim();
-        if (lowerVal === 'matrix') { setUrl(''); triggerMatrixEffect(); }
-        if (lowerVal === 'hack') { setUrl(''); triggerHackEffect(); }
-        if (lowerVal === 'silent hill') { setUrl(''); triggerSilentHillEffect(); }
-        if (lowerVal.includes("viva l'algerie") || lowerVal.includes("viva algerie")) { setUrl(''); triggerAlgerieEffect(); }
-        if (lowerVal === 'pes 6' || lowerVal === 'pes6') { setUrl(''); triggerPes6Effect(); }
+        setUrl(triggerEasterEgg(val) ? '' : val);
     };
 
     const handleConvert = async () => {
         if (conversionsLeft <= 0) {
-            onError("Daily limit reached (5/5).");
+            onError(`Daily limit reached (${DAILY_LIMIT}/${DAILY_LIMIT}).`);
             return;
         }
 
@@ -309,68 +157,19 @@ function Converter({ onError }) {
         setStatus('Connecting...');
 
         try {
-            const response = await fetch('/api/convert', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ url, format }),
+            await convertVideo({
+                url,
+                format,
+                onProgress: (percent, serverStatus) => {
+                    setProgress(percent);
+                    setStatus(serverStatus);
+                },
+                onComplete: (downloadPath) => {
+                    setResult(downloadPath);
+                    setStatus('Complete!');
+                    setConversionsLeft(consumeConversion());
+                },
             });
-
-            if (!response.ok) {
-                if (response.status === 429) throw new Error('Daily limit reached.');
-                let message = `Server error (HTTP ${response.status})`;
-                try {
-                    const err = await response.json();
-                    if (err && err.error) message = err.error;
-                } catch (parseError) {
-                    console.error('Could not parse error response:', parseError);
-                }
-                throw new Error(message);
-            }
-
-            if (!response.body) throw new Error('Streaming is not supported by this browser.');
-
-            const reader = response.body.getReader();
-            const decoder = new TextDecoder();
-            let buffer = '';
-            let receivedTerminalEvent = false;
-
-            while (true) {
-                const { done, value } = await reader.read();
-                if (done) break;
-                buffer += decoder.decode(value, { stream: true });
-                const lines = buffer.split('\n\n');
-                buffer = lines.pop();
-
-                for (const line of lines) {
-                    if (line.startsWith('data: ')) {
-                        let data;
-                        try {
-                            data = JSON.parse(line.slice(6));
-                        } catch (parseError) {
-                            console.error('Malformed server event:', line, parseError);
-                            throw new Error('Received a malformed response from the server.');
-                        }
-                        if (data.type === 'complete' || data.type === 'error') receivedTerminalEvent = true;
-                        if (data.type === 'progress') {
-                            setProgress(data.value);
-                            setStatus(data.status);
-                        } else if (data.type === 'complete') {
-                            setResult(data.download_path);
-                            setStatus('Complete!');
-                            
-                            const newLimit = conversionsLeft - 1;
-                            setConversionsLeft(newLimit);
-                            localStorage.setItem('conversionsLeft', newLimit);
-                        } else if (data.type === 'error') {
-                            throw new Error(data.message);
-                        }
-                    }
-                }
-            }
-
-            if (!receivedTerminalEvent) {
-                throw new Error('Connection closed before the conversion finished.');
-            }
         } catch (err) {
             onError(err.message);
         } finally {
@@ -421,40 +220,14 @@ function Converter({ onError }) {
                             
                             <div className="flex justify-between items-center mt-2 text-sm">
                                 <span className={conversionsLeft === 0 ? "text-red-500" : "text-gray-400"}>
-                                    Daily limit: {conversionsLeft}/5
+                                    Daily limit: {conversionsLeft}/{DAILY_LIMIT}
                                 </span>
                             </div>
                         </div>
 
                         <div className="mt-8 max-w-2xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 animate-fade-in">
-                            <div className="bg-gray-800/50 p-4 rounded-lg">
-                                <h4 className="text-red-500 font-bold mb-3">Video</h4>
-                                <div className="flex flex-wrap gap-2 justify-center">
-                                    {['mp4-1080p', 'mp4-720p', 'mp4-480p'].map(f => (
-                                        <button
-                                            key={f}
-                                            onClick={() => setFormat(f)}
-                                            className={`px-3 py-1 rounded text-sm border ${format === f ? 'bg-red-600 border-red-600 text-white' : 'border-gray-600 text-gray-300 hover:bg-gray-700'}`}
-                                        >
-                                            {f.toUpperCase()}
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-                            <div className="bg-gray-800/50 p-4 rounded-lg">
-                                <h4 className="text-red-500 font-bold mb-3">Audio</h4>
-                                <div className="flex flex-wrap gap-2 justify-center">
-                                    {['mp3-128k', 'mp3-320k', 'wav'].map(f => (
-                                        <button
-                                            key={f}
-                                            onClick={() => setFormat(f)}
-                                            className={`px-3 py-1 rounded text-sm border ${format === f ? 'bg-red-600 border-red-600 text-white' : 'border-gray-600 text-gray-300 hover:bg-gray-700'}`}
-                                        >
-                                            {f.toUpperCase()}
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
+                            <FormatGroup title="Video" formats={VIDEO_FORMATS} selected={format} onSelect={setFormat} />
+                            <FormatGroup title="Audio" formats={AUDIO_FORMATS} selected={format} onSelect={setFormat} />
                         </div>
                     </>
                 )}
@@ -481,7 +254,7 @@ function Converter({ onError }) {
                 {result && (
                     <div className="mt-8 max-w-2xl mx-auto bg-gray-800 p-6 rounded-xl border border-gray-700 animate-fade-in">
                         <h3 className="text-xl font-bold text-white mb-4">Conversion Successful!</h3>
-                        <p className="text-gray-300 mb-6 font-mono text-sm break-all">{result.split(/[\\/]/).pop()}</p>
+                        <p className="text-gray-300 mb-6 font-mono text-sm break-all">{filenameFromPath(result)}</p>
                         
                         <div className="flex flex-col gap-3">
                             <a 
@@ -551,7 +324,7 @@ function FAQ() {
     const [activeIndex, setActiveIndex] = useState(null);
     const questions = [
         { q: "Is it legal?", a: "For personal use only. Respect copyright laws." },
-        { q: "Is it free?", a: "Yes, completely free with a daily limit of 5 videos." },
+        { q: "Is it free?", a: `Yes, completely free with a daily limit of ${DAILY_LIMIT} videos.` },
         { q: "Which formats?", a: "MP4 (up to 1080p) and MP3 (up to 320kbps)." }
     ];
 

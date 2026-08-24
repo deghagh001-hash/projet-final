@@ -3,14 +3,13 @@ from werkzeug.exceptions import HTTPException, NotFound
 import yt_dlp
 import logging
 import os
-import re
 import time
 import threading
-import glob
 import shutil
-import json
 import queue
 from datetime import datetime
+
+from converter import build_ydl_opts, is_supported_url, resolve_final_filename, sse_error, sse_event
 
 logging.basicConfig(
     level=logging.INFO,
@@ -20,7 +19,6 @@ logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 DOWNLOAD_FOLDER = 'downloads'
-ALLOWED_DOMAINS = r'(youtube\.com|youtu\.be|tiktok\.com|instagram\.com|twitch\.tv)'
 
 # 1. Vérification de FFmpeg
 if not shutil.which('ffmpeg'):
@@ -147,7 +145,7 @@ def convert():
     
     # Vérifier la limite AVANT de commencer
     if not check_rate_limit(client_ip):
-        return jsonify({'error': 'Daily limit reached (5/5). Try again tomorrow.'}), 429
+        return jsonify({'error': f'Daily limit reached ({DAILY_LIMIT}/{DAILY_LIMIT}). Try again tomorrow.'}), 429
 
     data = request.get_json(silent=True)
     if not isinstance(data, dict):
@@ -161,7 +159,7 @@ def convert():
     video_url = video_url.strip()
 
     # Validation URL stricte
-    if not re.search(ALLOWED_DOMAINS, video_url):
+    if not is_supported_url(video_url):
         return jsonify({'error': 'Domain not supported. Only YouTube, TikTok, Instagram, Twitch.'}), 400
 
     # Queue pour communiquer entre le thread de téléchargement et le générateur de réponse
@@ -184,58 +182,11 @@ def convert():
                 elif d['status'] == 'finished':
                     msg_queue.put({'type': 'progress', 'value': 100, 'status': 'Processing...'})
 
-            ydl_opts = {
-                'outtmpl': f'{DOWNLOAD_FOLDER}/%(title)s.%(ext)s',
-                'quiet': True,
-                'no_warnings': True,
-                'progress_hooks': [progress_hook],
-            }
-
-            # Configuration des formats (identique à avant)
-            if requested_format == 'mp4-1080p':
-                ydl_opts['format'] = 'bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best'
-            elif requested_format == 'mp4-720p':
-                ydl_opts['format'] = 'bestvideo[height<=720][ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best'
-            elif requested_format == 'mp4-480p':
-                ydl_opts['format'] = 'bestvideo[height<=480][ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best'
-            elif requested_format == 'mp3-128k':
-                ydl_opts['format'] = 'bestaudio/best'
-                ydl_opts['postprocessors'] = [{'key': 'FFmpegExtractAudio', 'preferredcodec': 'mp3', 'preferredquality': '128'}]
-            elif requested_format == 'mp3-320k':
-                ydl_opts['format'] = 'bestaudio/best'
-                ydl_opts['postprocessors'] = [{'key': 'FFmpegExtractAudio', 'preferredcodec': 'mp3', 'preferredquality': '320'}]
-            elif requested_format == 'wav':
-                ydl_opts['format'] = 'bestaudio/best'
-                ydl_opts['postprocessors'] = [{'key': 'FFmpegExtractAudio', 'preferredcodec': 'wav'}]
-            else:
-                ydl_opts['format'] = 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best'
+            ydl_opts = build_ydl_opts(requested_format, DOWNLOAD_FOLDER, progress_hook)
 
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 info_dict = ydl.extract_info(video_url, download=True)
-                
-                # Logique de nom de fichier (identique à avant)
-                if 'postprocessors' in ydl_opts:
-                    target_ext = ydl_opts['postprocessors'][0]['preferredcodec']
-                    filename = ydl.prepare_filename(info_dict)
-                    final_filename = filename.rsplit('.', 1)[0] + '.' + target_ext
-                    if not os.path.exists(final_filename):
-                        # yt-dlp might rename files during post-processing, so we need to find the actual file
-                        # This is a heuristic and might need refinement for complex cases
-                        list_of_files = glob.glob(f'{DOWNLOAD_FOLDER}/*')
-                        # Filter by files that match the expected base name and target extension
-                        matching_files = [f for f in list_of_files if os.path.basename(f).startswith(os.path.basename(filename).rsplit('.', 1)[0]) and f.endswith(target_ext)]
-                        if matching_files:
-                            final_filename = max(matching_files, key=os.path.getctime)
-                        else:
-                            # Fallback if specific file not found, try to find any new file
-                            new_files = [f for f in list_of_files if os.path.getctime(f) > (time.time() - 10)] # files created in last 10 seconds
-                            if new_files:
-                                final_filename = max(new_files, key=os.path.getctime)
-                            else:
-                                raise Exception("Could not determine final filename after conversion.")
-                else:
-                    final_filename = ydl.prepare_filename(info_dict)
-
+                final_filename = resolve_final_filename(ydl, info_dict, ydl_opts, DOWNLOAD_FOLDER)
                 basename = os.path.basename(final_filename)
                 
                 # Succès !
@@ -266,8 +217,7 @@ def convert():
                 # Attendre un message de la queue (timeout pour éviter le blocage infini)
                 msg = msg_queue.get(timeout=300) 
                 
-                # Formater en SSE (data: json\n\n)
-                yield f"data: {json.dumps(msg)}\n\n"
+                yield sse_event(msg)
                 
                 if msg['type'] in ['complete', 'error']:
                     break
@@ -277,13 +227,13 @@ def convert():
                 if not thread.is_alive():
                     # If thread is dead and queue is empty, assume an error occurred that wasn't caught by the hook
                     logger.error("Download thread for %s died without emitting a terminal event", video_url)
-                    yield f"data: {json.dumps({'type': 'error', 'message': 'Conversion process failed or timed out.'})}\n\n"
+                    yield sse_error('Conversion process failed or timed out.')
                     break
                 # If thread is still alive, continue waiting
                 continue
             except Exception as e:
                 logger.exception("Internal error while streaming progress for %s", video_url)
-                yield f"data: {json.dumps({'type': 'error', 'message': f'Internal server error during streaming: {str(e)}'})}\n\n"
+                yield sse_error(f'Internal server error during streaming: {str(e)}')
                 break
 
     return Response(stream_with_context(generate()), mimetype='text/event-stream')

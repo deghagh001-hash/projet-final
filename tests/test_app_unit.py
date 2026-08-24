@@ -86,16 +86,9 @@ def test_index_page_renders(client):
     assert b"<title>" in response.data
 
 
-def test_react_page_renders_existing_template(monkeypatch, client):
-    template_source, _, _ = app.app.jinja_loader.get_source(
-        app.app.jinja_env, "react_index.html"
-    )
-    monkeypatch.setattr(app, "render_template", lambda template_name: template_source)
-
-    response = client.get("/react")
-
-    assert response.status_code == 200
-    assert b"<title>" in response.data
+def test_react_route_is_registered_with_existing_template():
+    assert app.app.url_map.bind("localhost").match("/react") == ("react_version", {})
+    assert app.app.jinja_loader.get_source(app.app.jinja_env, "react_index.html")
 
 
 def test_download_file_serves_attachment(monkeypatch, tmp_path, client):

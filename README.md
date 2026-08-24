@@ -64,7 +64,16 @@ Le build sera généré dans `static/react_build/`
 python app.py
 ```
 
-Le serveur démarre sur `http://127.0.0.1:5000`
+Le serveur démarre sur `http://127.0.0.1:5000`.
+
+Le mode debug Flask est désactivé par défaut (la console Werkzeug permet l'exécution de code à distance).
+Pour l'activer en local uniquement :
+
+```bash
+FLASK_DEBUG=1 python app.py
+```
+
+Variables d'environnement disponibles : `HOST` (défaut `127.0.0.1`), `PORT` (défaut `5000`), `FLASK_DEBUG` (défaut `0`).
 
 ### Versions disponibles
 
@@ -124,9 +133,12 @@ Accédez à la page secrète : `http://127.0.0.1:5000/react-app` puis cliquez su
 
 ### Mesures implémentées
 
-- ✅ Content Security Policy (CSP)
-- ✅ Validation stricte des URLs (regex)
-- ✅ Rate limiting (5 conversions/jour/IP)
+- ✅ Content Security Policy (CSP) + `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`
+- ✅ Validation stricte des URLs (schéma http(s) + domaine exact via liste blanche)
+- ✅ Validation du format demandé (liste blanche)
+- ✅ Messages d'erreur génériques côté client (détails uniquement dans les logs serveur)
+- ✅ Mode debug désactivé par défaut
+- ✅ Rate limiting (8 conversions/jour/IP)
 - ✅ Vérification de la taille des fichiers téléchargés
 - ✅ Nettoyage automatique des fichiers temporaires
 - ✅ Domaines autorisés uniquement (YouTube, TikTok, Instagram, Twitch)
@@ -136,6 +148,9 @@ Accédez à la page secrète : `http://127.0.0.1:5000/react-app` puis cliquez su
 - ⚠️ yt-dlp peut parfois générer des fichiers invalides sous Windows
 - ⚠️ Les threads Flask peuvent bloquer avec yt-dlp (utiliser Gunicorn/Waitress en prod)
 - ⚠️ Babel in-browser est lent (utiliser la version compilée `/react-app`)
+- ⚠️ Le rate limiting est en mémoire et basé sur `request.remote_addr` : derrière un reverse proxy, utiliser `ProxyFix` et un stockage partagé (Redis)
+- ⚠️ Les fichiers de `downloads/` sont servis sans authentification : quiconque connaît le nom du fichier peut le récupérer avant son nettoyage automatique
+- ⚠️ La CSP autorise encore `unsafe-inline` / `unsafe-eval` (requis par Tailwind CDN et Babel in-browser)
 
 ## 📁 Structure du projet
 

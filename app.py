@@ -9,7 +9,14 @@ import shutil
 import queue
 from datetime import datetime
 
-from converter import build_ydl_opts, is_supported_url, resolve_final_filename, sse_error, sse_event
+from converter import (
+    build_ydl_opts,
+    is_supported_format,
+    is_supported_url,
+    resolve_final_filename,
+    sse_error,
+    sse_event,
+)
 
 logging.basicConfig(
     level=logging.INFO,
@@ -36,33 +43,29 @@ os.makedirs(DOWNLOAD_FOLDER, exist_ok=True)
 # 2. Système de Rate Limiting (Limitation par IP)
 # Stockage en mémoire : { 'ip_address': { 'date': 'YYYY-MM-DD', 'count': 0 } }
 clients_usage = {}
+usage_lock = threading.Lock()
 DAILY_LIMIT = 8
 
 def check_rate_limit(ip_address):
     today = datetime.now().strftime('%Y-%m-%d')
-    
-    if ip_address not in clients_usage:
-        clients_usage[ip_address] = {'date': today, 'count': 0}
-    
-    client = clients_usage[ip_address]
-    
-    # Réinitialiser si c'est un nouveau jour
-    if client['date'] != today:
-        client['date'] = today
-        client['count'] = 0
-    
-    if client['count'] >= DAILY_LIMIT:
-        return False
-    
-    return True
+
+    with usage_lock:
+        # Purger les entrées des jours précédents pour borner la mémoire utilisée
+        for ip in [ip for ip, client in clients_usage.items() if client['date'] != today]:
+            del clients_usage[ip]
+
+        client = clients_usage.setdefault(ip_address, {'date': today, 'count': 0})
+        return client['count'] < DAILY_LIMIT
 
 def increment_usage(ip_address):
     today = datetime.now().strftime('%Y-%m-%d')
-    client = clients_usage.setdefault(ip_address, {'date': today, 'count': 0})
-    if client['date'] != today:
-        client['date'] = today
-        client['count'] = 0
-    client['count'] += 1
+
+    with usage_lock:
+        client = clients_usage.setdefault(ip_address, {'date': today, 'count': 0})
+        if client['date'] != today:
+            client['date'] = today
+            client['count'] = 0
+        client['count'] += 1
 
 def cleanup_old_files():
     """Thread d'arrière-plan pour supprimer les fichiers vieux de plus de 10 minutes."""
@@ -71,6 +74,8 @@ def cleanup_old_files():
             current_time = time.time()
             if os.path.exists(DOWNLOAD_FOLDER):
                 for filename in os.listdir(DOWNLOAD_FOLDER):
+                    if filename.startswith('.'):
+                        continue
                     file_path = os.path.join(DOWNLOAD_FOLDER, filename)
                     if os.path.isfile(file_path):
                         file_age = current_time - os.path.getmtime(file_path)
@@ -103,6 +108,9 @@ def add_security_headers(response):
         "base-uri 'self';"
     )
     response.headers['Content-Security-Policy'] = csp
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    response.headers['X-Frame-Options'] = 'DENY'
+    response.headers['Referrer-Policy'] = 'no-referrer'
     return response
 
 @app.route('/')
@@ -158,9 +166,12 @@ def convert():
         return jsonify({'error': 'Missing required field: url.'}), 400
     video_url = video_url.strip()
 
-    # Validation URL stricte
+    # Validation URL stricte (schéma + domaine)
     if not is_supported_url(video_url):
         return jsonify({'error': 'Domain not supported. Only YouTube, TikTok, Instagram, Twitch.'}), 400
+
+    if not is_supported_format(requested_format):
+        return jsonify({'error': 'Unsupported format.'}), 400
 
     # Queue pour communiquer entre le thread de téléchargement et le générateur de réponse
     msg_queue = queue.Queue()
@@ -197,9 +208,10 @@ def convert():
                 msg_queue.put({'type': 'complete', 'download_path': f'downloads/{basename}'})
                 terminal_message_sent = True
 
-        except Exception as e:
+        except Exception:
+            # Ne pas exposer les détails internes (chemins, traces) au client
             logger.exception("Conversion failed for %s (format=%s)", video_url, requested_format)
-            msg_queue.put({'type': 'error', 'message': str(e) or e.__class__.__name__})
+            msg_queue.put({'type': 'error', 'message': 'Conversion failed. Please check the URL and try again.'})
             terminal_message_sent = True
         finally:
             # Le client attend toujours un évènement terminal : ne jamais le laisser en suspens.
@@ -231,15 +243,22 @@ def convert():
                     break
                 # If thread is still alive, continue waiting
                 continue
-            except Exception as e:
+            except Exception:
                 logger.exception("Internal error while streaming progress for %s", video_url)
-                yield sse_error(f'Internal server error during streaming: {str(e)}')
+                yield sse_error('Internal server error during streaming.')
                 break
 
     return Response(stream_with_context(generate()), mimetype='text/event-stream')
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    # Le mode debug expose la console interactive Werkzeug (exécution de code à distance) :
+    # il doit rester désactivé sauf demande explicite en local.
+    debug_enabled = os.environ.get('FLASK_DEBUG', '0').lower() in ('1', 'true', 'yes')
+    app.run(
+        host=os.environ.get('HOST', '127.0.0.1'),
+        port=int(os.environ.get('PORT', 5000)),
+        debug=debug_enabled,
+    )
 
 # PRODUCTION DEPLOYMENT:
 # Use a WSGI server to avoid blocking threads with yt-dlp.

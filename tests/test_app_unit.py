@@ -248,7 +248,7 @@ def test_convert_mp3_resolves_matching_glob_fallback(monkeypatch, tmp_path, clie
     assert sse_events(response)[-1]["download_path"] == "downloads/song-final.mp3"
 
 
-def test_convert_failure_streams_exception_and_does_not_increment(
+def test_convert_failure_streams_generic_error_and_does_not_increment(
     monkeypatch, tmp_path, client
 ):
     monkeypatch.setattr(app, "DOWNLOAD_FOLDER", str(tmp_path))
@@ -264,7 +264,7 @@ def test_convert_failure_streams_exception_and_does_not_increment(
             return False
 
         def extract_info(self, video_url, download):
-            raise RuntimeError("download failed")
+            raise RuntimeError(f"download failed for {tmp_path}/secret.mp4")
 
     monkeypatch.setattr(app.yt_dlp, "YoutubeDL", FakeYoutubeDL)
 
@@ -273,11 +273,10 @@ def test_convert_failure_streams_exception_and_does_not_increment(
         json={"url": "https://youtube.com/watch?v=bad", "format": "mp4-1080p"},
     )
 
-    events = sse_events(response)
-    assert any(
-        event["type"] == "error" and "download failed" in event["message"]
-        for event in events
-    )
+    errors = [event for event in sse_events(response) if event["type"] == "error"]
+    assert errors
+    # Les détails de l'exception (chemins, traces) ne doivent pas fuir vers le client.
+    assert all("download failed" not in event["message"] for event in errors)
     assert app.clients_usage["127.0.0.1"]["count"] == 0
 
 

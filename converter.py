@@ -3,10 +3,13 @@
 import glob
 import json
 import os
-import re
 import time
+from urllib.parse import urlparse
 
-ALLOWED_DOMAINS = re.compile(r'(youtube\.com|youtu\.be|tiktok\.com|instagram\.com|twitch\.tv)')
+ALLOWED_DOMAINS = ('youtube.com', 'youtu.be', 'tiktok.com', 'instagram.com', 'twitch.tv')
+ALLOWED_SCHEMES = ('http', 'https')
+MAX_URL_LENGTH = 2048
+MAX_FILESIZE = 1024 * 1024 * 1024  # 1 GiB
 
 DEFAULT_VIDEO_FORMAT = 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best'
 
@@ -34,7 +37,26 @@ FORMAT_PRESETS = {
 
 
 def is_supported_url(video_url):
-    return bool(video_url) and bool(ALLOWED_DOMAINS.search(video_url))
+    """N'autoriser que les URLs http(s) dont le nom d'hôte est dans la liste blanche.
+
+    Le nom d'hôte est comparé après analyse de l'URL : une simple recherche de
+    sous-chaîne laisserait passer `https://exemple.test/?x=youtube.com`, dont
+    l'extracteur générique de yt-dlp peut atteindre des hôtes internes.
+    """
+    if not isinstance(video_url, str) or not video_url or len(video_url) > MAX_URL_LENGTH:
+        return False
+    try:
+        parsed = urlparse(video_url.strip())
+    except ValueError:
+        return False
+    if parsed.scheme not in ALLOWED_SCHEMES:
+        return False
+    host = (parsed.hostname or '').lower().rstrip('.')
+    return any(host == domain or host.endswith('.' + domain) for domain in ALLOWED_DOMAINS)
+
+
+def is_supported_format(requested_format):
+    return requested_format in FORMAT_PRESETS
 
 
 def build_ydl_opts(requested_format, download_folder, progress_hook):
@@ -44,6 +66,9 @@ def build_ydl_opts(requested_format, download_folder, progress_hook):
         'quiet': True,
         'no_warnings': True,
         'progress_hooks': [progress_hook],
+        'noplaylist': True,
+        'max_filesize': MAX_FILESIZE,
+        'socket_timeout': 30,
     }
     opts.update(FORMAT_PRESETS.get(requested_format, {'format': DEFAULT_VIDEO_FORMAT}))
     return opts

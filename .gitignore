@@ -1,4 +1,18 @@
-.venv/
 __pycache__/
+*.py[cod]
+.venv/
+venv/
 .pytest_cache/
 .coverage
+
+node_modules/
+
+# Logs et artefacts d'exécution
+*.log
+downloads/*
+!downloads/.gitkeep
+
+# Secrets
+.env
+.env.*
+!.env.example

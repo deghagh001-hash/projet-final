@@ -1,143 +1,11 @@
-const { useState, useEffect, useRef } = React;
+// Version React "in-browser" (transformée par Babel standalone, cf. templates/react_index.html).
+// Les effets Easter Egg, le client de conversion et le quota quotidien viennent
+// des modules partagés (static/js/shared/*), également utilisés par main.js et frontend/src.
+const { triggerEasterEgg } = window.EasterEggs;
+const { VIDEO_FORMATS, AUDIO_FORMATS, DEFAULT_FORMAT, convertVideo } = window.ConvertClient;
+const { DAILY_LIMIT, readConversionsLeft, consumeConversion } = window.DailyLimit;
 
-// ==========================================
-// UTILS: Easter Egg Effects
-// ==========================================
-const triggerMatrixEffect = () => {
-    const canvas = document.createElement('canvas');
-    canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;pointer-events:none;';
-    document.body.appendChild(canvas);
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()';
-    const fontSize = 14;
-    const columns = canvas.width / fontSize;
-    const drops = Array(Math.floor(columns)).fill(1);
-
-    function draw() {
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = '#0F0';
-        ctx.font = `${fontSize}px monospace`;
-        for (let i = 0; i < drops.length; i++) {
-            ctx.fillText(chars[Math.floor(Math.random() * chars.length)], i * fontSize, drops[i] * fontSize);
-            if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
-            drops[i]++;
-        }
-    }
-    const interval = setInterval(draw, 33);
-    setTimeout(() => { clearInterval(interval); canvas.remove(); }, 10000);
-};
-
-const triggerSilentHillEffect = () => {
-    const fog = document.createElement('div');
-    fog.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle, rgba(128,128,128,0.3) 0%, rgba(64,64,64,0.7) 100%);z-index:9998;pointer-events:none;';
-    document.body.appendChild(fog);
-    document.body.style.filter = 'grayscale(80%) contrast(1.2)';
-    
-    // Audio simulation (since we might not have the file in this context, we just log)
-    console.log("Playing Silent Hill Audio...");
-    const audio = new Audio("/static/audio/son silent hill.mp3");
-    audio.volume = 0.5;
-    audio.loop = true;
-    audio.play().catch(e => console.log('Audio play failed:', e));
-
-    const cleanup = () => {
-        fog.remove();
-        document.body.style.filter = '';
-        audio.pause();
-        document.removeEventListener('keydown', cleanup);
-        document.removeEventListener('click', cleanup);
-    };
-
-    document.addEventListener('keydown', cleanup, { once: true });
-    document.addEventListener('click', cleanup, { once: true });
-};
-
-const triggerHackEffect = () => {
-    const overlay = document.createElement('div');
-    overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:#000;color:#0f0;z-index:9999;font-family:monospace;padding:20px;overflow:auto;';
-    overlay.innerHTML = '<pre>SYSTEM BREACH DETECTED...\\nINITIATING SECURITY PROTOCOL...\\nACCESS GRANTED\\n\\n> Decrypting files...\\n> Bypassing firewall...\\n> Downloading data...\\n\\nHACK COMPLETE ✓</pre>';
-    document.body.appendChild(overlay);
-    setTimeout(() => overlay.remove(), 5000);
-};
-
-const triggerAlgerieEffect = () => {
-console.log('React App Starting...');
-
-// ==========================================
-// UTILS: Easter Egg Effects
-// ==========================================
-const triggerMatrixEffect = () => {
-    const canvas = document.createElement('canvas');
-    canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;pointer-events:none;';
-    document.body.appendChild(canvas);
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()';
-    const fontSize = 14;
-    const columns = canvas.width / fontSize;
-    const drops = Array(Math.floor(columns)).fill(1);
-
-    function draw() {
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = '#0F0';
-        ctx.font = `${fontSize}px monospace`;
-        for (let i = 0; i < drops.length; i++) {
-            ctx.fillText(chars[Math.floor(Math.random() * chars.length)], i * fontSize, drops[i] * fontSize);
-            if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
-            drops[i]++;
-        }
-    }
-    const interval = setInterval(draw, 33);
-    setTimeout(() => { clearInterval(interval); canvas.remove(); }, 10000);
-};
-
-const triggerSilentHillEffect = () => {
-    const fog = document.createElement('div');
-    fog.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle, rgba(128,128,128,0.3) 0%, rgba(64,64,64,0.7) 100%);z-index:9998;pointer-events:none;';
-    document.body.appendChild(fog);
-    document.body.style.filter = 'grayscale(80%) contrast(1.2)';
-    
-    // Audio simulation (since we might not have the file in this context, we just log)
-    console.log("Playing Silent Hill Audio...");
-    const audio = new Audio("/static/audio/son silent hill.mp3");
-    audio.volume = 0.5;
-    audio.loop = true;
-    audio.play().catch(e => console.log('Audio play failed:', e));
-
-    const cleanup = () => {
-        fog.remove();
-        document.body.style.filter = '';
-        audio.pause();
-        document.removeEventListener('keydown', cleanup);
-        document.removeEventListener('click', cleanup);
-    };
-
-    document.addEventListener('keydown', cleanup, { once: true });
-    document.addEventListener('click', cleanup, { once: true });
-};
-
-const triggerHackEffect = () => {
-    const overlay = document.createElement('div');
-    overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:#000;color:#0f0;z-index:9999;font-family:monospace;padding:20px;overflow:auto;';
-    overlay.innerHTML = '<pre>SYSTEM BREACH DETECTED...\\nINITIATING SECURITY PROTOCOL...\\nACCESS GRANTED\\n\\n> Decrypting files...\\n> Bypassing firewall...\\n> Downloading data...\\n\\nHACK COMPLETE ✓</pre>';
-    document.body.appendChild(overlay);
-    setTimeout(() => overlay.remove(), 5000);
-};
-
-const triggerAlgerieEffect = () => {
-    const colors = ['#006233', '#FFFFFF', '#D21034'];
-    let colorIndex = 0;
-    const interval = setInterval(() => {
-        document.body.style.backgroundColor = colors[colorIndex];
-        colorIndex = (colorIndex + 1) % colors.length;
-    }, 300);
-    setTimeout(() => { clearInterval(interval); document.body.style.backgroundColor = ''; }, 5000);
-};
+console.log('React App Script Starting...');
 
 // ==========================================
 // COMPOSANT : HEADER
@@ -150,7 +18,7 @@ function Header({ themeColor, setThemeColor, currentPage, setPage }) {
         { id: 'home', label: 'Converter' },
         { id: 'faq', label: 'FAQ' },
         { id: 'about', label: 'About Us' },
-        { id: 'eastereggs', label: 'Secrets 🤫' }, // Added Easter Eggs link
+        { id: 'eastereggs', label: 'Secrets 🤫' },
     ];
 
     return (
@@ -162,15 +30,14 @@ function Header({ themeColor, setThemeColor, currentPage, setPage }) {
                             <img src="/static/img/logo.png" alt="Logo" className="w-8 h-8 mr-2" />
                             <span className="cursor-pointer hover:scale-105 transition-transform">youtubetomp4</span>
                         </a>
-                        
-                        {/* Theme Picker */}
+
                         <div className="relative group">
                             <button className="w-6 h-6 rounded-full bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 border border-white/20 shadow-lg hover:scale-110 transition-transform"></button>
                             <div className="absolute left-0 top-full mt-2 bg-gray-800 border border-gray-700 rounded-lg p-3 shadow-xl hidden group-hover:block w-48 z-50">
                                 <div className="grid grid-cols-5 gap-2">
                                     {colors.map(c => (
-                                        <button 
-                                            key={c} 
+                                        <button
+                                            key={c}
                                             onClick={() => setThemeColor(c)}
                                             style={{ backgroundColor: c }}
                                             className="w-6 h-6 rounded-full hover:scale-110 transition-transform border border-gray-600"
@@ -181,12 +48,11 @@ function Header({ themeColor, setThemeColor, currentPage, setPage }) {
                         </div>
                     </div>
 
-                    {/* Desktop Nav */}
                     <nav className="hidden md:block">
                         <div className="ml-10 flex items-center space-x-4">
                             {navItems.map(item => (
-                                <button 
-                                    key={item.id} 
+                                <button
+                                    key={item.id}
                                     onClick={() => setPage(item.id)}
                                     className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${currentPage === item.id ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white'}`}
                                 >
@@ -196,20 +62,18 @@ function Header({ themeColor, setThemeColor, currentPage, setPage }) {
                         </div>
                     </nav>
 
-                    {/* Mobile Menu Button */}
                     <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="md:hidden text-gray-300 hover:text-white p-2">
                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
                     </button>
                 </div>
             </div>
-            
-            {/* Mobile Menu */}
+
             {isMenuOpen && (
                 <div className="md:hidden bg-gray-800 border-t border-gray-700">
                      <div className="flex flex-col py-2 space-y-1">
                         {navItems.map(item => (
-                            <button 
-                                key={item.id} 
+                            <button
+                                key={item.id}
                                 onClick={() => { setPage(item.id); setIsMenuOpen(false); }}
                                 className={`text-left px-4 py-3 rounded-md transition-colors ${currentPage === item.id ? 'bg-gray-700 text-white' : 'text-gray-300 hover:text-white hover:bg-gray-700'}`}
                             >
@@ -224,49 +88,53 @@ function Header({ themeColor, setThemeColor, currentPage, setPage }) {
 }
 
 // ==========================================
-// COMPOSANT : CONVERTER (Logic Core)
+// COMPOSANT : SELECTEUR DE FORMAT
+// ==========================================
+function FormatGroup({ title, formats, selected, onSelect }) {
+    return (
+        <div className="bg-gray-800/50 p-4 rounded-lg">
+            <h4 className="text-red-500 font-bold mb-3">{title}</h4>
+            <div className="flex flex-wrap gap-2 justify-center">
+                {formats.map(f => (
+                    <button
+                        key={f}
+                        onClick={() => onSelect(f)}
+                        className={`px-3 py-1 rounded text-sm border ${selected === f ? 'bg-red-600 border-red-600 text-white' : 'border-gray-600 text-gray-300 hover:bg-gray-700'}`}
+                    >
+                        {f.toUpperCase()}
+                    </button>
+                ))}
+            </div>
+        </div>
+    );
+}
+
+// ==========================================
+// COMPOSANT : CONVERTER
 // ==========================================
 function Converter() {
     const [url, setUrl] = React.useState('');
     const [platform, setPlatform] = React.useState('youtube');
-    const [format, setFormat] = React.useState('mp4-1080p');
+    const [format, setFormat] = React.useState(DEFAULT_FORMAT);
     const [loading, setLoading] = React.useState(false);
     const [progress, setProgress] = React.useState(0);
     const [status, setStatus] = React.useState('');
     const [result, setResult] = React.useState(null);
     const [error, setError] = React.useState(null);
-    const [conversionsLeft, setConversionsLeft] = React.useState(5);
+    const [conversionsLeft, setConversionsLeft] = React.useState(DAILY_LIMIT);
 
-    // Load limits on mount
     React.useEffect(() => {
-        const stored = localStorage.getItem('conversionsLeft');
-        const lastDate = localStorage.getItem('lastConversionDate');
-        const today = new Date().toDateString();
-
-        if (lastDate !== today) {
-            localStorage.setItem('lastConversionDate', today);
-            localStorage.setItem('conversionsLeft', 5);
-            setConversionsLeft(5);
-        } else if (stored !== null) {
-            setConversionsLeft(parseInt(stored));
-        }
+        setConversionsLeft(readConversionsLeft());
     }, []);
 
-    // Easter Eggs Logic
     const handleUrlChange = (e) => {
         const val = e.target.value;
-        setUrl(val);
-        
-        const lowerVal = val.toLowerCase().trim();
-        if (lowerVal === 'matrix') { setUrl(''); triggerMatrixEffect(); }
-        if (lowerVal === 'hack') { setUrl(''); triggerHackEffect(); }
-        if (lowerVal === 'silent hill') { setUrl(''); triggerSilentHillEffect(); }
-        if (lowerVal.includes("viva l'algerie") || lowerVal.includes("viva algerie")) { setUrl(''); triggerAlgerieEffect(); }
+        setUrl(triggerEasterEgg(val) ? '' : val);
     };
 
     const handleConvert = async () => {
         if (conversionsLeft <= 0) {
-            setError("Daily limit reached (5/5).");
+            setError(`Daily limit reached (${DAILY_LIMIT}/${DAILY_LIMIT}).`);
             return;
         }
 
@@ -277,49 +145,19 @@ function Converter() {
         setStatus('Connecting...');
 
         try {
-            const response = await fetch('/api/convert', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ url, format }),
+            await convertVideo({
+                url,
+                format,
+                onProgress: (percent, statusText) => {
+                    setProgress(percent);
+                    setStatus(statusText);
+                },
+                onComplete: (downloadPath) => {
+                    setResult(downloadPath);
+                    setStatus('Complete!');
+                    setConversionsLeft(consumeConversion());
+                },
             });
-
-            if (!response.ok) {
-                if (response.status === 429) throw new Error('Daily limit reached.');
-                const err = await response.json();
-                throw new Error(err.error || 'Server error');
-            }
-
-            const reader = response.body.getReader();
-            const decoder = new TextDecoder();
-            let buffer = '';
-
-            while (true) {
-                const { done, value } = await reader.read();
-                if (done) break;
-                buffer += decoder.decode(value, { stream: true });
-                const lines = buffer.split('\n\n');
-                buffer = lines.pop();
-
-                for (const line of lines) {
-                    if (line.startsWith('data: ')) {
-                        const data = JSON.parse(line.slice(6));
-                        if (data.type === 'progress') {
-                            setProgress(data.value);
-                            setStatus(data.status);
-                        } else if (data.type === 'complete') {
-                            setResult(data.download_path);
-                            setStatus('Complete!');
-                            
-                            // Update Limit
-                            const newLimit = conversionsLeft - 1;
-                            setConversionsLeft(newLimit);
-                            localStorage.setItem('conversionsLeft', newLimit);
-                        } else if (data.type === 'error') {
-                            throw new Error(data.message);
-                        }
-                    }
-                }
-            }
         } catch (err) {
             setError(err.message);
         } finally {
@@ -335,10 +173,9 @@ function Converter() {
                     Convert any video from different web site to video mp4 and audio mp3 format
                 </p>
 
-                {/* Platforms */}
                 <div className="flex justify-center flex-wrap gap-4 mb-8">
                     {['youtube', 'tiktok', 'instagram', 'twitch'].map(p => (
-                        <button 
+                        <button
                             key={p}
                             onClick={() => setPlatform(p)}
                             className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all capitalize ${platform === p ? 'bg-white text-black' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'}`}
@@ -348,17 +185,16 @@ function Converter() {
                     ))}
                 </div>
 
-                {/* Input Area */}
                 <div className="max-w-2xl mx-auto relative">
                     <div className="flex">
-                        <input 
-                            type="text" 
+                        <input
+                            type="text"
                             value={url}
                             onChange={handleUrlChange}
                             placeholder={`Paste ${platform} video URL here...`}
                             className="flex-grow p-4 text-lg bg-gray-100 text-gray-900 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-red-500"
                         />
-                        <button 
+                        <button
                             onClick={handleConvert}
                             disabled={loading || !url}
                             className="bg-red-600 text-white font-bold p-4 text-lg rounded-r-lg hover:bg-red-700 disabled:bg-gray-600 transition-colors min-w-[120px]"
@@ -366,15 +202,13 @@ function Converter() {
                             {loading ? <div className="spinner mx-auto"></div> : 'Convert'}
                         </button>
                     </div>
-                    
-                    {/* Limits */}
+
                     <div className="flex justify-between items-center mt-2 text-sm">
                         <span className={conversionsLeft === 0 ? "text-red-500" : "text-gray-400"}>
-                            Daily limit: {conversionsLeft}/5
+                            Daily limit: {conversionsLeft}/{DAILY_LIMIT}
                         </span>
                     </div>
 
-                    {/* Error */}
                     {error && (
                         <div className="bg-red-500 text-white p-3 rounded-lg mt-4 text-center animate-fade-in">
                             {error}
@@ -382,39 +216,11 @@ function Converter() {
                     )}
                 </div>
 
-                {/* Format Selector */}
                 <div className="mt-8 max-w-2xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="bg-gray-800/50 p-4 rounded-lg">
-                        <h4 className="text-red-500 font-bold mb-3">Video</h4>
-                        <div className="flex flex-wrap gap-2 justify-center">
-                            {['mp4-1080p', 'mp4-720p', 'mp4-480p'].map(f => (
-                                <button
-                                    key={f}
-                                    onClick={() => setFormat(f)}
-                                    className={`px-3 py-1 rounded text-sm border ${format === f ? 'bg-red-600 border-red-600 text-white' : 'border-gray-600 text-gray-300 hover:bg-gray-700'}`}
-                                >
-                                    {f.toUpperCase()}
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-                    <div className="bg-gray-800/50 p-4 rounded-lg">
-                        <h4 className="text-red-500 font-bold mb-3">Audio</h4>
-                        <div className="flex flex-wrap gap-2 justify-center">
-                            {['mp3-128k', 'mp3-320k', 'wav'].map(f => (
-                                <button
-                                    key={f}
-                                    onClick={() => setFormat(f)}
-                                    className={`px-3 py-1 rounded text-sm border ${format === f ? 'bg-red-600 border-red-600 text-white' : 'border-gray-600 text-gray-300 hover:bg-gray-700'}`}
-                                >
-                                    {f.toUpperCase()}
-                                </button>
-                            ))}
-                        </div>
-                    </div>
+                    <FormatGroup title="Video" formats={VIDEO_FORMATS} selected={format} onSelect={setFormat} />
+                    <FormatGroup title="Audio" formats={AUDIO_FORMATS} selected={format} onSelect={setFormat} />
                 </div>
 
-                {/* Progress Bar */}
                 {loading && (
                     <div className="mt-6 max-w-2xl mx-auto">
                         <p className="text-gray-300 mb-2">{status}</p>
@@ -429,14 +235,13 @@ function Converter() {
                     </div>
                 )}
 
-                {/* Result */}
                 {result && (
                     <div className="mt-8 max-w-2xl mx-auto bg-gray-800 p-6 rounded-xl border border-gray-700 animate-fade-in">
                         <h3 className="text-xl font-bold text-white mb-4">Conversion Successful!</h3>
                         <div className="flex gap-4 justify-center">
-                            <a 
-                                href={`/${result}`} 
-                                download 
+                            <a
+                                href={`/${result}`}
+                                download
                                 className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg font-bold transition-colors flex items-center gap-2"
                             >
                                 📥 Download File
@@ -458,6 +263,14 @@ function BatchConverter() {
     const [items, setItems] = React.useState([]);
     const [processing, setProcessing] = React.useState(false);
 
+    const updateItem = (index, changes) => {
+        setItems(prev => {
+            const copy = [...prev];
+            copy[index] = { ...copy[index], ...changes };
+            return copy;
+        });
+    };
+
     const startBatch = async () => {
         const urlList = urls.split('\n').map(u => u.trim()).filter(u => u.length > 0);
         if (urlList.length === 0 || urlList.length > 3) {
@@ -469,7 +282,6 @@ function BatchConverter() {
         const newItems = urlList.map(url => ({ url, status: 'Pending...', progress: 0, error: null, result: null }));
         setItems(newItems);
 
-        // Process sequentially
         for (let i = 0; i < newItems.length; i++) {
             await processItem(i, newItems[i].url);
         }
@@ -477,69 +289,24 @@ function BatchConverter() {
     };
 
     const processItem = async (index, url) => {
-        // Update item status to running
-        setItems(prev => {
-            const copy = [...prev];
-            copy[index].status = 'Starting...';
-            return copy;
-        });
+        updateItem(index, { status: 'Starting...' });
 
         try {
-            const response = await fetch('/api/convert', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ url, format: 'mp4-1080p' }),
+            await convertVideo({
+                url,
+                format: DEFAULT_FORMAT,
+                onProgress: (percent) => updateItem(index, { progress: percent, status: `Downloading ${Math.round(percent)}%` }),
+                onComplete: (downloadPath) => updateItem(index, { status: 'Done ✓', result: downloadPath, progress: 100 }),
             });
-
-            if (!response.ok) throw new Error('Failed');
-
-            const reader = response.body.getReader();
-            const decoder = new TextDecoder();
-            let buffer = '';
-
-            while (true) {
-                const { done, value } = await reader.read();
-                if (done) break;
-                buffer += decoder.decode(value, { stream: true });
-                const lines = buffer.split('\n\n');
-                buffer = lines.pop();
-
-                for (const line of lines) {
-                    if (line.startsWith('data: ')) {
-                        const data = JSON.parse(line.slice(6));
-                        if (data.type === 'progress') {
-                            setItems(prev => {
-                                const copy = [...prev];
-                                copy[index].progress = data.value;
-                                copy[index].status = `Downloading ${Math.round(data.value)}%`;
-                                return copy;
-                            });
-                        } else if (data.type === 'complete') {
-                            setItems(prev => {
-                                const copy = [...prev];
-                                copy[index].status = 'Done ✓';
-                                copy[index].result = data.download_path;
-                                copy[index].progress = 100;
-                                return copy;
-                            });
-                        }
-                    }
-                }
-            }
         } catch (e) {
-            setItems(prev => {
-                const copy = [...prev];
-                copy[index].status = 'Failed ❌';
-                copy[index].error = e.message;
-                return copy;
-            });
+            updateItem(index, { status: 'Failed ❌', error: e.message });
         }
     };
 
     return (
         <div className="container mx-auto px-4 text-center pb-20">
             {!isOpen ? (
-                <button 
+                <button
                     onClick={() => setIsOpen(true)}
                     className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-8 py-3 rounded-xl font-bold shadow-lg hover:shadow-purple-500/30 transition-all"
                 >
@@ -549,8 +316,8 @@ function BatchConverter() {
                 <div className="max-w-2xl mx-auto bg-gray-800/80 backdrop-blur-md rounded-2xl p-6 border border-gray-700 shadow-xl animate-fade-in">
                     <h3 className="text-xl font-bold text-white mb-4">Batch Converter</h3>
                     {!processing && items.length === 0 && (
-                        <>
-                            <textarea 
+                        <React.Fragment>
+                            <textarea
                                 className="w-full p-4 bg-gray-900/50 text-white rounded-xl border border-gray-600 mb-4 font-mono text-sm"
                                 rows="4"
                                 placeholder="Paste up to 3 URLs (one per line)..."
@@ -561,10 +328,9 @@ function BatchConverter() {
                                 <button onClick={() => setIsOpen(false)} className="text-gray-400 hover:text-white px-4 py-2">Cancel</button>
                                 <button onClick={startBatch} className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg">Start Batch</button>
                             </div>
-                        </>
+                        </React.Fragment>
                     )}
 
-                    {/* List of items */}
                     <div className="space-y-3 mt-4">
                         {items.map((item, idx) => (
                             <div key={idx} className="bg-gray-700/50 p-3 rounded-lg flex items-center justify-between border border-gray-600">
@@ -583,7 +349,7 @@ function BatchConverter() {
                             </div>
                         ))}
                     </div>
-                    
+
                     {items.length > 0 && !processing && (
                         <button onClick={() => { setItems([]); setUrls(''); }} className="mt-4 text-sm text-gray-400 hover:text-white underline">Convert More</button>
                     )}
@@ -600,7 +366,7 @@ function FAQ() {
     const [activeIndex, setActiveIndex] = React.useState(null);
     const questions = [
         { q: "Is it legal?", a: "For personal use only. Respect copyright laws." },
-        { q: "Is it free?", a: "Yes, completely free with a daily limit of 5 videos." },
+        { q: "Is it free?", a: `Yes, completely free with a daily limit of ${DAILY_LIMIT} videos.` },
         { q: "Which formats?", a: "MP4 (up to 1080p) and MP3 (up to 320kbps)." }
     ];
 
@@ -611,7 +377,7 @@ function FAQ() {
                 <div className="space-y-4">
                     {questions.map((item, idx) => (
                         <div key={idx} className="bg-gray-800 rounded-lg overflow-hidden">
-                            <button 
+                            <button
                                 onClick={() => setActiveIndex(activeIndex === idx ? null : idx)}
                                 className="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-700 transition-colors"
                             >
@@ -619,7 +385,7 @@ function FAQ() {
                                 <span className={`transform transition-transform ${activeIndex === idx ? 'rotate-180' : ''}`}>▼</span>
                             </button>
                             {activeIndex === idx && (
-                                <div className="px-6 py-4 text-gray-300 border-t border-700">
+                                <div className="px-6 py-4 text-gray-300 border-t border-gray-700">
                                     {item.a}
                                 </div>
                             )}
@@ -694,7 +460,7 @@ function About() {
 // ==========================================
 function App() {
     const [themeColor, setThemeColor] = React.useState('#EF4444');
-    const [currentPage, setCurrentPage] = React.useState('home'); // 'home', 'faq', 'about', 'eastereggs'
+    const [currentPage, setCurrentPage] = React.useState('home');
 
     React.useEffect(() => {
         document.documentElement.style.setProperty('--accent-color', themeColor);
@@ -708,15 +474,14 @@ function App() {
         return () => document.head.removeChild(style);
     }, [themeColor]);
 
-    // Simple Router Logic
     const renderPage = () => {
         switch(currentPage) {
             case 'home':
                 return (
-                    <>
+                    <React.Fragment>
                         <Converter />
                         <BatchConverter />
-                    </>
+                    </React.Fragment>
                 );
             case 'faq': return <FAQ />;
             case 'about': return <About />;
@@ -727,19 +492,19 @@ function App() {
 
     return (
         <div className="min-h-screen font-sans text-white flex flex-col">
-            <Header 
-                themeColor={themeColor} 
-                setThemeColor={setThemeColor} 
+            <Header
+                themeColor={themeColor}
+                setThemeColor={setThemeColor}
                 currentPage={currentPage}
                 setPage={setCurrentPage}
             />
-            
+
             <main className="flex-grow">
                 {renderPage()}
             </main>
 
             <footer className="bg-gray-900 py-8 text-center text-gray-500 text-sm mt-auto">
-                <p>&copy; 2025 YouTube to MP4. Built with React & Flask.</p>
+                <p>&copy; 2025 YouTube to MP4. Built with React &amp; Flask.</p>
             </footer>
         </div>
     );

@@ -592,26 +592,46 @@ async function startConversion(url, isBatch = false, batchItemElement = null) {
             if (response.status === 429) {
                 throw new Error('Daily limit reached (8/8). Please try again tomorrow.');
             }
-            const err = await response.json();
-            throw new Error(err.error || 'Server error');
+            let message = `Server error (HTTP ${response.status})`;
+            try {
+                const err = await response.json();
+                if (err && err.error) message = err.error;
+            } catch (parseError) {
+                console.error('Could not parse error response:', parseError);
+            }
+            throw new Error(message);
+        }
+
+        if (!response.body) {
+            throw new Error('Streaming is not supported by this browser.');
         }
 
         // Reading the SSE stream
         const reader = response.body.getReader();
         const decoder = new TextDecoder();
         let buffer = '';
+        let receivedTerminalEvent = false;
 
         while (true) {
             const { done, value } = await reader.read();
             if (done) break;
 
             buffer += decoder.decode(value, { stream: true });
-            const lines = buffer.split('\\n\\n');
+            const lines = buffer.split('\n\n');
             buffer = lines.pop(); // Keep incomplete chunk
 
             for (const line of lines) {
                 if (line.startsWith('data: ')) {
-                    const data = JSON.parse(line.slice(6));
+                    let data;
+                    try {
+                        data = JSON.parse(line.slice(6));
+                    } catch (parseError) {
+                        console.error('Malformed server event:', line, parseError);
+                        throw new Error('Received a malformed response from the server.');
+                    }
+                    if (data.type === 'complete' || data.type === 'error') {
+                        receivedTerminalEvent = true;
+                    }
                     
                     if (data.type === 'progress') {
                         const percent = data.value;
@@ -693,6 +713,10 @@ async function startConversion(url, isBatch = false, batchItemElement = null) {
                     }
                 }
             }
+        }
+
+        if (!receivedTerminalEvent) {
+            throw new Error('Connection closed before the conversion finished.');
         }
 
     } catch (error) {

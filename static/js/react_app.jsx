@@ -285,13 +285,22 @@ function Converter() {
 
             if (!response.ok) {
                 if (response.status === 429) throw new Error('Daily limit reached.');
-                const err = await response.json();
-                throw new Error(err.error || 'Server error');
+                let message = `Server error (HTTP ${response.status})`;
+                try {
+                    const err = await response.json();
+                    if (err && err.error) message = err.error;
+                } catch (parseError) {
+                    console.error('Could not parse error response:', parseError);
+                }
+                throw new Error(message);
             }
+
+            if (!response.body) throw new Error('Streaming is not supported by this browser.');
 
             const reader = response.body.getReader();
             const decoder = new TextDecoder();
             let buffer = '';
+            let receivedTerminalEvent = false;
 
             while (true) {
                 const { done, value } = await reader.read();
@@ -302,7 +311,14 @@ function Converter() {
 
                 for (const line of lines) {
                     if (line.startsWith('data: ')) {
-                        const data = JSON.parse(line.slice(6));
+                        let data;
+                        try {
+                            data = JSON.parse(line.slice(6));
+                        } catch (parseError) {
+                            console.error('Malformed server event:', line, parseError);
+                            throw new Error('Received a malformed response from the server.');
+                        }
+                        if (data.type === 'complete' || data.type === 'error') receivedTerminalEvent = true;
                         if (data.type === 'progress') {
                             setProgress(data.value);
                             setStatus(data.status);
@@ -319,6 +335,10 @@ function Converter() {
                         }
                     }
                 }
+            }
+
+            if (!receivedTerminalEvent) {
+                throw new Error('Connection closed before the conversion finished.');
             }
         } catch (err) {
             setError(err.message);
@@ -491,11 +511,24 @@ function BatchConverter() {
                 body: JSON.stringify({ url, format: 'mp4-1080p' }),
             });
 
-            if (!response.ok) throw new Error('Failed');
+            if (!response.ok) {
+                if (response.status === 429) throw new Error('Daily limit reached.');
+                let message = `Server error (HTTP ${response.status})`;
+                try {
+                    const err = await response.json();
+                    if (err && err.error) message = err.error;
+                } catch (parseError) {
+                    console.error('Could not parse error response:', parseError);
+                }
+                throw new Error(message);
+            }
+
+            if (!response.body) throw new Error('Streaming is not supported by this browser.');
 
             const reader = response.body.getReader();
             const decoder = new TextDecoder();
             let buffer = '';
+            let receivedTerminalEvent = false;
 
             while (true) {
                 const { done, value } = await reader.read();
@@ -506,7 +539,14 @@ function BatchConverter() {
 
                 for (const line of lines) {
                     if (line.startsWith('data: ')) {
-                        const data = JSON.parse(line.slice(6));
+                        let data;
+                        try {
+                            data = JSON.parse(line.slice(6));
+                        } catch (parseError) {
+                            console.error('Malformed server event:', line, parseError);
+                            throw new Error('Received a malformed response from the server.');
+                        }
+                        if (data.type === 'complete' || data.type === 'error') receivedTerminalEvent = true;
                         if (data.type === 'progress') {
                             setItems(prev => {
                                 const copy = [...prev];
@@ -522,9 +562,15 @@ function BatchConverter() {
                                 copy[index].progress = 100;
                                 return copy;
                             });
+                        } else if (data.type === 'error') {
+                            throw new Error(data.message);
                         }
                     }
                 }
+            }
+
+            if (!receivedTerminalEvent) {
+                throw new Error('Connection closed before the conversion finished.');
             }
         } catch (e) {
             setItems(prev => {
